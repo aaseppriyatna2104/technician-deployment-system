@@ -7,6 +7,7 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231d4ed8'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='white' stroke-width='2.5' stroke-linecap='round'/%3E%3Ccircle cx='22' cy='20' r='3' fill='%23fbbf24'/%3E%3C/svg%3E" type="image/svg+xml">
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,450;14..32,500;14..32,550;14..32,600;14..32,650;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js">
     </script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js">
@@ -15,6 +16,7 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
     </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <style>
         :root {
             --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -32,41 +34,25 @@
             --border-light: #eff2f7;
             --border-glass: rgba(255, 255, 255, 0.55);
             --shadow-xs: 0 1px 2px rgba(11, 26, 51, 0.04);
-            --shadow-sm: 0 1px 3px rgba(11, 26, 51, 0.05), 0 1px 2px rgba(11, 26, 51, 0.03);
-            --shadow-md: 0 4px 14px rgba(11, 26, 51, 0.06), 0 2px 6px rgba(11, 26, 51, 0.04);
-            --shadow-lg: 0 12px 32px rgba(11, 26, 51, 0.08), 0 4px 12px rgba(11, 26, 51, 0.05);
-            --shadow-xl: 0 24px 52px rgba(11, 26, 51, 0.11), 0 8px 20px rgba(11, 26, 51, 0.06);
-            --shadow-glass: 0 8px 28px rgba(11, 26, 51, 0.06), 0 2px 8px rgba(11, 26, 51, 0.03);
-            --shadow-card-hover: 0 16px 40px rgba(11, 26, 51, 0.11), 0 6px 16px rgba(11, 26, 51, 0.05);
+            --shadow-sm: 0 1px 3px rgba(11, 26, 51, 0.05);
+            --shadow-md: 0 4px 14px rgba(11, 26, 51, 0.06);
+            --shadow-lg: 0 12px 32px rgba(11, 26, 51, 0.08);
+            --shadow-xl: 0 24px 52px rgba(11, 26, 51, 0.11);
+            --shadow-glass: 0 8px 28px rgba(11, 26, 51, 0.06);
             --primary: #1d4ed8;
             --primary-hover: #1e40af;
-            --primary-light: #eff6ff;
-            --primary-soft: #dbeafe;
             --primary-ring: rgba(29, 78, 216, 0.2);
             --success: #0f766e;
-            --success-light: #f0fdfa;
-            --success-soft: #ccfbf1;
             --warning: #b45309;
-            --warning-light: #fffbeb;
-            --warning-soft: #fef3c7;
             --danger: #b91c1c;
-            --danger-light: #fef2f2;
-            --danger-soft: #fee2e2;
             --purple: #6d28d9;
-            --purple-light: #faf5ff;
             --teal: #0e7490;
-            --teal-light: #ecfeff;
             --sidebar-width: 260px;
             --sidebar-collapsed: 72px;
             --navbar-height: 62px;
-            --radius-sm: 8px;
             --radius: 10px;
-            --radius-md: 14px;
             --radius-lg: 18px;
-            --radius-xl: 24px;
-            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-spring: 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --transition: 0.25s;
         }
         .dark-mode {
             --bg-canvas: #070c17;
@@ -82,31 +68,14 @@
             --border-default: #1d2d47;
             --border-light: #172437;
             --border-glass: rgba(255, 255, 255, 0.06);
-            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
-            --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.3);
-            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.35);
-            --shadow-xl: 0 24px 52px rgba(0, 0, 0, 0.4);
-            --shadow-glass: 0 8px 28px rgba(0, 0, 0, 0.3);
-            --shadow-card-hover: 0 16px 40px rgba(0, 0, 0, 0.32);
             --primary: #3b82f6;
             --primary-hover: #2563eb;
-            --primary-light: #1e3050;
-            --primary-soft: #1d3a6a;
             --primary-ring: rgba(59, 130, 246, 0.25);
             --success: #10b981;
-            --success-light: #0c2d20;
-            --success-soft: #064e3b;
             --warning: #f59e0b;
-            --warning-light: #2d2006;
-            --warning-soft: #78350f;
             --danger: #ef4444;
-            --danger-light: #2d0c0c;
-            --danger-soft: #7f1d1d;
             --purple: #8b5cf6;
-            --purple-light: #1c1530;
             --teal: #06b6d4;
-            --teal-light: #0c2824;
         }
         *,
         *::before,
@@ -118,7 +87,6 @@
         html {
             font-size: 15px;
             scroll-behavior: smooth;
-            -webkit-tap-highlight-color: transparent;
         }
         body {
             font-family: var(--font-sans);
@@ -126,27 +94,16 @@
             color: var(--text-primary);
             transition: background 0.35s, color 0.35s;
             line-height: 1.5;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             min-height: 100vh;
             overflow-x: hidden;
-            letter-spacing: -0.01em;
         }
         ::-webkit-scrollbar {
             width: 5px;
             height: 5px;
         }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-            border-radius: 20px;
-        }
         ::-webkit-scrollbar-thumb {
             background: var(--text-tertiary);
             border-radius: 20px;
-            opacity: 0.4;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--text-secondary);
         }
         @keyframes spin {
             from {
@@ -164,16 +121,6 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
-            }
-        }
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.97);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
             }
         }
         @keyframes slideInRight {
@@ -196,23 +143,6 @@
                 opacity: 0;
             }
         }
-        @keyframes pulse {
-            0%,
-            100% {
-                box-shadow: 0 0 0 0 rgba(29, 78, 216, 0.4);
-            }
-            50% {
-                box-shadow: 0 0 0 8px rgba(29, 78, 216, 0);
-            }
-        }
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
-        }
         #loading-screen {
             position: fixed;
             inset: 0;
@@ -223,8 +153,7 @@
             justify-content: center;
             flex-direction: column;
             gap: 16px;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
-            pointer-events: all;
+            transition: opacity 0.4s, visibility 0.4s;
         }
         #loading-screen.hidden {
             opacity: 0;
@@ -239,12 +168,6 @@
             border-top-color: var(--primary);
             animation: spin 0.7s linear infinite;
         }
-        .loader-text {
-            font-size: 0.82rem;
-            color: var(--text-tertiary);
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
         .sidebar {
             position: fixed;
             top: 0;
@@ -256,9 +179,8 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            transition: transform var(--transition), width var(--transition), box-shadow var(--transition);
-            box-shadow: var(--shadow-xs);
-            flex-shrink: 0;
+            transition: all var(--transition);
+            box-shadow: var(--shadow-sm);
         }
         .sidebar.collapsed {
             width: var(--sidebar-collapsed);
@@ -271,12 +193,6 @@
         }
         .sidebar.collapsed .nav-item {
             justify-content: center;
-            padding: 12px;
-            border-radius: var(--radius-sm);
-        }
-        .sidebar.collapsed .sidebar-logo {
-            justify-content: center;
-            padding: 16px 10px;
         }
         .sidebar-logo {
             display: flex;
@@ -285,16 +201,7 @@
             padding: 18px 20px;
             border-bottom: 1px solid var(--border-light);
             font-weight: 700;
-            font-size: 1.05rem;
             color: var(--primary);
-            white-space: nowrap;
-            flex-shrink: 0;
-            letter-spacing: -0.3px;
-        }
-        .sidebar-logo svg {
-            width: 28px;
-            height: 28px;
-            flex-shrink: 0;
         }
         .sidebar-nav {
             flex: 1;
@@ -311,8 +218,6 @@
             letter-spacing: 0.8px;
             color: var(--text-tertiary);
             padding: 18px 14px 6px;
-            white-space: nowrap;
-            user-select: none;
         }
         .nav-item {
             display: flex;
@@ -324,53 +229,27 @@
             font-weight: 500;
             font-size: 0.84rem;
             color: var(--text-secondary);
-            transition: all var(--transition-fast);
-            white-space: nowrap;
+            transition: all 0.2s;
             border: none;
             background: none;
             width: 100%;
             text-align: left;
             font-family: inherit;
-            letter-spacing: -0.1px;
-            position: relative;
-            outline: none;
-        }
-        .nav-item:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
         }
         .nav-item:hover {
             background: var(--bg-subtle);
-            color: var(--text-primary);
         }
         .nav-item.active {
             background: var(--primary);
-            color: #ffffff;
-            box-shadow: 0 2px 10px var(--primary-ring);
+            color: #fff;
             font-weight: 600;
-            border-radius: var(--radius);
-        }
-        .sidebar-footer-text {
-            font-size: 0.7rem;
-            color: var(--text-tertiary);
-            display: block;
-            text-align: center;
-        }
-        .sidebar-footer {
-            padding: 14px 18px;
-            border-top: 1px solid var(--border-light);
-            flex-shrink: 0;
-            text-align: center;
         }
         .sidebar-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(11, 26, 51, 0.45);
+            background: rgba(0, 0, 0, 0.45);
             z-index: 999;
             display: none;
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-            transition: opacity var(--transition);
         }
         .sidebar-overlay.show {
             display: block;
@@ -379,8 +258,6 @@
             margin-left: var(--sidebar-width);
             transition: margin-left var(--transition);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
         .main-wrapper.expanded {
             margin-left: var(--sidebar-collapsed);
@@ -391,16 +268,13 @@
             z-index: 500;
             height: var(--navbar-height);
             background: var(--bg-glass);
-            backdrop-filter: blur(18px) saturate(160%);
-            -webkit-backdrop-filter: blur(18px) saturate(160%);
+            backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--border-glass);
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 22px;
-            gap: 14px;
-            box-shadow: var(--shadow-xs);
-            transition: all var(--transition);
+            box-shadow: var(--shadow-sm);
         }
         .navbar-left {
             display: flex;
@@ -408,7 +282,6 @@
             gap: 12px;
             flex: 1;
             max-width: 450px;
-            min-width: 0;
         }
         .hamburger {
             display: none;
@@ -416,24 +289,12 @@
             border: none;
             cursor: pointer;
             padding: 8px;
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            flex-shrink: 0;
             font-size: 1.2rem;
-            transition: all var(--transition-fast);
-            outline: none;
-        }
-        .hamburger:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-        .hamburger:hover {
-            background: var(--bg-subtle);
+            color: var(--text-primary);
         }
         .search-container {
             position: relative;
             flex: 1;
-            min-width: 160px;
         }
         .search-input {
             width: 100%;
@@ -443,18 +304,12 @@
             background: var(--bg-subtle);
             color: var(--text-primary);
             font-size: 0.8rem;
-            transition: all var(--transition-fast);
-            font-family: inherit;
             outline: none;
-            letter-spacing: -0.1px;
+            font-family: inherit;
         }
         .search-input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-ring);
-            background: var(--bg-surface);
-        }
-        .search-input::placeholder {
-            color: var(--text-placeholder);
         }
         .search-icon {
             position: absolute;
@@ -468,10 +323,8 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            flex-shrink: 0;
         }
         .navbar-btn {
-            position: relative;
             width: 36px;
             height: 36px;
             border-radius: 50%;
@@ -482,80 +335,49 @@
             align-items: center;
             justify-content: center;
             color: var(--text-secondary);
-            transition: all var(--transition-fast);
-            flex-shrink: 0;
             font-size: 1rem;
-            outline: none;
-        }
-        .navbar-btn:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
         }
         .navbar-btn:hover {
             background: var(--bg-subtle);
-            color: var(--text-primary);
         }
         .avatar {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1d4ed8, #1e40af);
+            background: var(--primary);
             color: #fff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.8rem;
             cursor: pointer;
-            flex-shrink: 0;
-            transition: all var(--transition-fast);
-            border: none;
-            outline: none;
-        }
-        .avatar:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 3px;
-        }
-        .avatar:hover {
-            box-shadow: 0 0 0 5px var(--primary-ring);
-            transform: scale(1.05);
         }
         .content-area {
             flex: 1;
-            padding: 24px 24px 32px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
             gap: 24px;
             max-width: 1440px;
-            width: 100%;
             margin: 0 auto;
         }
         .section {
             display: none;
             flex-direction: column;
             gap: 24px;
-            animation: fadeInUp 0.35s ease;
+            animation: fadeInUp 0.35s;
         }
         .section.active {
             display: flex;
-        }
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
         }
         .page-title {
             font-size: 1.35rem;
             font-weight: 700;
             letter-spacing: -0.4px;
-            color: var(--text-primary);
         }
         .page-subtitle {
             font-size: 0.78rem;
             color: var(--text-tertiary);
-            font-weight: 450;
         }
         .kpi-grid {
             display: grid;
@@ -565,103 +387,24 @@
         .kpi-card {
             background: var(--bg-glass);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid var(--border-glass);
             border-radius: var(--radius-lg);
-            padding: 18px 20px;
+            padding: 18px;
             cursor: pointer;
-            transition: all var(--transition-spring);
+            transition: all 0.35s;
             box-shadow: var(--shadow-glass);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
         }
         .kpi-card:hover {
             transform: translateY(-3px);
-            box-shadow: var(--shadow-card-hover);
-            border-color: rgba(29, 78, 216, 0.25);
-            background: var(--bg-glass-hover);
-        }
-        .kpi-icon-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .kpi-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-        }
-        .kpi-icon.blue {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-        .kpi-icon.green {
-            background: var(--success-light);
-            color: var(--success);
-        }
-        .kpi-icon.warning {
-            background: var(--warning-light);
-            color: var(--warning);
-        }
-        .kpi-icon.danger {
-            background: var(--danger-light);
-            color: var(--danger);
-        }
-        .kpi-icon.purple {
-            background: var(--purple-light);
-            color: var(--purple);
-        }
-        .kpi-icon.teal {
-            background: var(--teal-light);
-            color: var(--teal);
-        }
-        .kpi-trend {
-            font-size: 0.68rem;
-            font-weight: 600;
-            padding: 3px 9px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 3px;
-        }
-        .kpi-trend.up {
-            color: #0f766e;
-            background: #ecfdf5;
-        }
-        .dark-mode .kpi-trend.up {
-            background: #0c2d20;
-            color: #10b981;
-        }
-        .kpi-trend.down {
-            color: #b91c1c;
-            background: #fef2f2;
-        }
-        .dark-mode .kpi-trend.down {
-            background: #2d0c0c;
-            color: #ef4444;
-        }
-        .kpi-trend.stable {
-            color: var(--text-tertiary);
-            background: var(--bg-subtle);
+            box-shadow: var(--shadow-lg);
         }
         .kpi-value {
             font-size: 1.9rem;
             font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            line-height: 1;
         }
         .kpi-label {
             font-size: 0.7rem;
             color: var(--text-tertiary);
-            font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -671,14 +414,6 @@
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-sm);
             overflow: hidden;
-            transition: all var(--transition);
-        }
-        .panel-glass {
-            background: var(--bg-glass);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-glass);
-            box-shadow: var(--shadow-glass);
         }
         .panel-header {
             padding: 14px 18px;
@@ -692,11 +427,9 @@
         .panel-title {
             font-weight: 650;
             font-size: 0.9rem;
-            color: var(--text-primary);
-            letter-spacing: -0.2px;
         }
         .panel-body {
-            padding: 16px 18px;
+            padding: 16px;
             overflow-x: auto;
         }
         .panel-body.no-padding {
@@ -707,7 +440,6 @@
             border-collapse: collapse;
             font-size: 0.8rem;
             min-width: 700px;
-            letter-spacing: -0.1px;
         }
         table th,
         table td {
@@ -721,85 +453,53 @@
             color: var(--text-tertiary);
             font-size: 0.68rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            cursor: pointer;
-            user-select: none;
             background: var(--bg-subtle);
-            position: sticky;
-            top: 0;
-            transition: color var(--transition-fast);
-        }
-        table th:hover {
-            color: var(--text-primary);
-        }
-        table tbody tr {
-            transition: background var(--transition-fast);
         }
         table tbody tr:hover {
             background: var(--bg-subtle);
         }
-        table tbody tr.highlight-row {
-            background: var(--primary-light);
-            outline: 2px solid var(--primary);
-            outline-offset: -1px;
-            border-radius: 4px;
-        }
-        .dark-mode table tbody tr.highlight-row {
-            background: var(--primary-light);
-            outline-color: var(--primary);
-        }
         .badge {
             display: inline-flex;
-            align-items: center;
-            gap: 4px;
             padding: 4px 11px;
             border-radius: 14px;
             font-size: 0.68rem;
             font-weight: 600;
-            letter-spacing: 0.2px;
-            white-space: nowrap;
-            line-height: 1.3;
         }
         .badge-success {
-            background: var(--success-light);
-            color: var(--success);
+            background: #ecfdf5;
+            color: #0f766e;
+        }
+        .dark-mode .badge-success {
+            background: #0c2d20;
+            color: #10b981;
         }
         .badge-warning {
-            background: var(--warning-light);
-            color: var(--warning);
+            background: #fffbeb;
+            color: #b45309;
+        }
+        .dark-mode .badge-warning {
+            background: #2d2006;
+            color: #f59e0b;
         }
         .badge-danger {
-            background: var(--danger-light);
-            color: var(--danger);
+            background: #fef2f2;
+            color: #b91c1c;
+        }
+        .dark-mode .badge-danger {
+            background: #2d0c0c;
+            color: #ef4444;
         }
         .badge-info {
-            background: var(--primary-light);
-            color: var(--primary);
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+        .dark-mode .badge-info {
+            background: #1e3050;
+            color: #3b82f6;
         }
         .badge-neutral {
-            background: var(--bg-subtle);
+            background: #f1f5f9;
             color: #6b7280;
-        }
-        .progress-bar-wrap {
-            height: 6px;
-            background: var(--bg-muted);
-            border-radius: 10px;
-            overflow: hidden;
-            min-width: 70px;
-        }
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-        .progress-bar-fill::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-            animation: shimmer 2s infinite;
-            border-radius: inherit;
         }
         .charts-grid {
             display: grid;
@@ -807,7 +507,6 @@
             gap: 18px;
         }
         .chart-wrap {
-            position: relative;
             height: 280px;
             display: flex;
             align-items: center;
@@ -819,7 +518,6 @@
         }
         .calendar-container {
             height: 650px;
-            max-height: 75vh;
         }
         .kanban-board {
             display: grid;
@@ -831,42 +529,26 @@
             border-radius: var(--radius-lg);
             padding: 14px;
             min-height: 300px;
-            transition: background var(--transition-fast);
-        }
-        .kanban-column.drag-over {
-            background: var(--primary-light);
-            outline: 2px dashed var(--primary);
-            outline-offset: -4px;
         }
         .kanban-title {
             font-weight: 650;
             margin-bottom: 12px;
-            font-size: 0.85rem;
-            color: var(--text-primary);
         }
         .kanban-card {
             background: var(--bg-surface);
             border: 1px solid var(--border-default);
             border-radius: var(--radius);
-            padding: 12px 14px;
+            padding: 12px;
             margin-bottom: 8px;
             cursor: grab;
-            transition: all var(--transition-fast);
             font-size: 0.82rem;
-            color: var(--text-primary);
-            user-select: none;
-        }
-        .kanban-card:active {
-            cursor: grabbing;
+            transition: all 0.2s;
         }
         .kanban-card:hover {
             box-shadow: var(--shadow-md);
-            border-color: var(--primary);
         }
         .kanban-card.dragging {
             opacity: 0.5;
-            box-shadow: var(--shadow-lg);
-            transform: rotate(2deg);
         }
         .ranking-bar {
             display: flex;
@@ -874,11 +556,7 @@
             gap: 12px;
             margin: 10px 0;
             padding: 8px;
-            border-radius: var(--radius-sm);
-            transition: background var(--transition-fast);
-        }
-        .ranking-bar:hover {
-            background: var(--bg-subtle);
+            border-radius: var(--radius);
         }
         .ranking-pos {
             width: 30px;
@@ -888,10 +566,8 @@
             align-items: center;
             justify-content: center;
             font-weight: 700;
-            font-size: 0.8rem;
             background: var(--primary);
             color: #fff;
-            flex-shrink: 0;
         }
         .ranking-pos.gold {
             background: #b45309;
@@ -906,84 +582,151 @@
             height: 8px;
             border-radius: 4px;
             background: var(--primary);
-            transition: width 0.6s ease;
         }
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 8px 16px;
-            border-radius: var(--radius-sm);
+            border-radius: 8px;
             font-weight: 550;
             font-size: 0.78rem;
             cursor: pointer;
             border: 1px solid var(--border-default);
             background: var(--bg-surface);
             color: var(--text-primary);
-            transition: all var(--transition-fast);
+            transition: all 0.2s;
             font-family: inherit;
-            white-space: nowrap;
-            text-decoration: none;
-            letter-spacing: -0.1px;
-            outline: none;
-        }
-        .btn:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
         }
         .btn:hover {
             background: var(--bg-subtle);
-            border-color: var(--text-tertiary);
         }
         .btn-primary {
             background: var(--primary);
             color: #fff;
             border-color: var(--primary);
-            box-shadow: 0 2px 6px var(--primary-ring);
         }
         .btn-primary:hover {
             background: var(--primary-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 14px var(--primary-ring);
+        }
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+            border-color: var(--danger);
         }
         .btn-sm {
             padding: 5px 10px;
             font-size: 0.72rem;
+        }
+        .btn-xs {
+            padding: 3px 8px;
+            font-size: 0.65rem;
+            border-radius: 4px;
+        }
+        .action-btns {
+            display: flex;
+            gap: 4px;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: rgba(0, 0, 0, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+        .modal {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-xl);
+            width: 95%;
+            max-width: 560px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 0;
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 1rem;
+            position: sticky;
+            top: 0;
+            background: var(--bg-surface);
+            z-index: 1;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            padding: 4px 8px;
             border-radius: 6px;
         }
-        .filter-row {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .filter-select {
-            padding: 7px 11px;
-            border-radius: 7px;
-            border: 1px solid var(--border-default);
-            background: var(--bg-surface);
+        .modal-close:hover {
+            background: var(--bg-subtle);
             color: var(--text-primary);
-            font-size: 0.78rem;
-            font-family: inherit;
-            cursor: pointer;
-            outline: none;
-            transition: all var(--transition-fast);
         }
-        .filter-select:focus {
+        .modal-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .modal-footer {
+            padding: 14px 20px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-surface);
+            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .form-input,
+        .form-select {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-default);
+            background: var(--bg-subtle);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-family: inherit;
+            outline: none;
+        }
+        .form-input:focus,
+        .form-select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-ring);
         }
-        .divider {
-            border: none;
-            border-top: 1px solid var(--border-light);
-            margin: 6px 0;
-        }
-        .no-results {
-            text-align: center;
-            padding: 32px 16px;
-            color: var(--text-tertiary);
-            font-size: 0.9rem;
-            font-weight: 500;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
         .toast-container {
             position: fixed;
@@ -995,7 +738,6 @@
             gap: 8px;
             pointer-events: none;
             max-width: 400px;
-            width: 100%;
         }
         .toast {
             background: var(--bg-surface);
@@ -1010,159 +752,29 @@
             gap: 9px;
             animation: slideInRight 0.3s ease;
             pointer-events: auto;
-            transition: all var(--transition);
-            letter-spacing: -0.1px;
-            position: relative;
         }
         .toast.removing {
             animation: slideOutRight 0.28s ease forwards;
         }
-        .toast-icon {
-            flex-shrink: 0;
-            font-size: 1.1rem;
+        .toast-success {
+            border-left: 3px solid var(--success);
         }
-        .toast-message {
-            flex: 1;
-            min-width: 0;
+        .toast-error {
+            border-left: 3px solid var(--danger);
+        }
+        .toast-warning {
+            border-left: 3px solid var(--warning);
+        }
+        .toast-info {
+            border-left: 3px solid var(--primary);
         }
         .toast-close {
-            flex-shrink: 0;
             cursor: pointer;
             background: none;
             border: none;
             font-size: 1.1rem;
             color: var(--text-tertiary);
             padding: 2px;
-            border-radius: 4px;
-            transition: all var(--transition-fast);
-            line-height: 1;
-            outline: none;
-        }
-        .toast-close:hover {
-            color: var(--text-primary);
-            background: var(--bg-subtle);
-        }
-        .toast-close:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 1px;
-        }
-        .toast-success {
-            border-left: 3px solid var(--success);
-        }
-        .toast-success .toast-icon {
-            color: var(--success);
-        }
-        .toast-error {
-            border-left: 3px solid var(--danger);
-        }
-        .toast-error .toast-icon {
-            color: var(--danger);
-        }
-        .toast-warning {
-            border-left: 3px solid var(--warning);
-        }
-        .toast-warning .toast-icon {
-            color: var(--warning);
-        }
-        .toast-info {
-            border-left: 3px solid var(--primary);
-        }
-        .toast-info .toast-icon {
-            color: var(--primary);
-        }
-        .sim-map {
-            position: relative;
-            width: 100%;
-            height: 320px;
-            background: linear-gradient(145deg, #e2ecf5 0%, #dce6f0 30%, #e4ede4 70%, #d9e5f0 100%);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            border: 1px solid var(--border-default);
-            cursor: crosshair;
-        }
-        .dark-mode .sim-map {
-            background: linear-gradient(145deg, #101c2b 0%, #152136 30%, #172a2c 70%, #132136 100%);
-        }
-        .map-marker {
-            position: absolute;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            transition: all var(--transition-spring);
-        }
-        .map-marker:hover {
-            z-index: 10;
-            transform: translate(-50%, -50%) scale(1.2);
-        }
-        .map-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            border: 3px solid #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            animation: pulse 2.5s infinite;
-        }
-        .dark-mode .map-dot {
-            border-color: #0f1829;
-        }
-        .map-label {
-            background: var(--bg-surface);
-            color: var(--text-primary);
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            white-space: nowrap;
-            box-shadow: var(--shadow-md);
-            pointer-events: none;
-            letter-spacing: -0.1px;
-        }
-        .pagination {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            margin-top: 14px;
-        }
-        .pagination button {
-            padding: 5px 12px;
-            border-radius: 6px;
-            border: 1px solid var(--border-default);
-            background: var(--bg-surface);
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-secondary);
-            transition: all var(--transition-fast);
-            font-family: inherit;
-            min-width: 32px;
-            text-align: center;
-            outline: none;
-        }
-        .pagination button:focus-visible {
-            outline: 2px solid var(--primary);
-            outline-offset: 2px;
-        }
-        .pagination button:hover {
-            background: var(--bg-subtle);
-            border-color: var(--text-tertiary);
-        }
-        .pagination button.active {
-            background: var(--primary);
-            color: #fff;
-            border-color: var(--primary);
-            box-shadow: 0 2px 8px var(--primary-ring);
-            font-weight: 600;
-        }
-        .pagination button:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-            pointer-events: none;
         }
         .report-grid {
             display: grid;
@@ -1176,68 +788,26 @@
             padding: 22px 18px;
             text-align: center;
             box-shadow: var(--shadow-sm);
-            transition: all var(--transition-spring);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
         }
-        .report-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
-            border-color: rgba(29, 78, 216, 0.3);
+        .leaflet-container {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-lg);
+            z-index: 1;
+            background: #1a1a2e !important;
         }
-        .report-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-        }
-        .report-icon.blue {
-            background: var(--primary-light);
-            color: var(--primary);
-        }
-        .report-icon.green {
-            background: var(--success-light);
-            color: var(--success);
-        }
-        .report-icon.purple {
-            background: var(--purple-light);
-            color: var(--purple);
-        }
-        .report-icon.teal {
-            background: var(--teal-light);
-            color: var(--teal);
+        .map-wrapper {
+            height: 360px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
         }
         @media (max-width: 1100px) {
             .sidebar {
                 transform: translateX(-100%);
                 width: var(--sidebar-width);
-                box-shadow: var(--shadow-xl);
             }
             .sidebar.mobile-open {
                 transform: translateX(0);
-            }
-            .sidebar.collapsed {
-                width: var(--sidebar-width);
-            }
-            .sidebar.collapsed .nav-label,
-            .sidebar.collapsed .sidebar-footer-text,
-            .sidebar.collapsed .sidebar-logo-text,
-            .sidebar.collapsed .nav-section-label {
-                display: block;
-            }
-            .sidebar.collapsed .nav-item {
-                justify-content: flex-start;
-                padding: 10px 13px;
-            }
-            .sidebar.collapsed .sidebar-logo {
-                justify-content: flex-start;
-                padding: 18px 20px;
             }
             .main-wrapper {
                 margin-left: 0 !important;
@@ -1248,34 +818,14 @@
             .sidebar-overlay.show {
                 display: block;
             }
-            .kpi-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-                gap: 10px;
-            }
-            .kpi-card {
-                padding: 14px 16px;
-            }
-            .kpi-value {
-                font-size: 1.5rem;
+            .kanban-board {
+                grid-template-columns: 1fr;
             }
             .charts-grid {
                 grid-template-columns: 1fr;
             }
-            .chart-wrap {
-                height: 250px;
-            }
-            .kanban-board {
+            .form-row {
                 grid-template-columns: 1fr;
-            }
-            .content-area {
-                padding: 16px;
-                gap: 16px;
-            }
-            .navbar {
-                padding: 0 14px;
-            }
-            .sim-map {
-                height: 260px;
             }
             .calendar-container {
                 height: 500px;
@@ -1284,63 +834,16 @@
         @media (max-width: 640px) {
             .kpi-grid {
                 grid-template-columns: 1fr 1fr;
-                gap: 8px;
             }
-            .kpi-card {
-                padding: 11px 12px;
-                gap: 4px;
-            }
-            .kpi-value {
-                font-size: 1.3rem;
-            }
-            .kpi-label {
-                font-size: 0.62rem;
-            }
-            .kpi-icon {
-                width: 30px;
-                height: 30px;
-                font-size: 0.9rem;
-            }
-            .navbar-right .navbar-btn:nth-child(2),
-            .navbar-right .navbar-btn:nth-child(3) {
+            .navbar-right .navbar-btn:nth-child(2) {
                 display: none;
             }
-            .search-container {
-                max-width: 140px;
+            .modal {
+                max-width: 95vw;
+                max-height: 90vh;
             }
-            .panel-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
-            .chart-wrap {
-                height: 220px;
-            }
-            .report-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .sim-map {
-                height: 220px;
-            }
-            .calendar-container {
-                height: 420px;
-            }
-            table {
-                font-size: 0.7rem;
-            }
-            table th,
-            table td {
-                padding: 7px 9px;
-            }
-            .page-title {
-                font-size: 1.1rem;
-            }
-            .toast-container {
-                max-width: 300px;
-                right: 8px;
-                top: 8px;
+            .map-wrapper {
+                height: 280px;
             }
         }
     </style>
@@ -1348,344 +851,338 @@
 <body>
     <div id="loading-screen">
         <div class="loader-ring"></div>
-        <div class="loader-text">Loading PowerOps…</div>
+        <div style="font-size:0.82rem;color:var(--text-tertiary)">Loading PowerOps…</div>
     </div>
-    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
-    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
-        <div class="sidebar-logo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>
-            <span class="sidebar-logo-text">PowerOps</span>
-        </div>
-        <nav class="sidebar-nav" id="sidebarNav" aria-label="Sidebar navigation">
-            <span class="nav-section-label" role="presentation">Overview</span>
-            <button class="nav-item active" data-section="dashboard" aria-current="page" tabindex="0">
-                <span aria-hidden="true">📊</span><span class="nav-label">Dashboard</span>
-            </button>
-            <button class="nav-item" data-section="calendar" tabindex="0">
-                <span aria-hidden="true">📅</span><span class="nav-label">Calendar</span>
-            </button>
-            <button class="nav-item" data-section="kanban" tabindex="0">
-                <span aria-hidden="true">📋</span><span class="nav-label">Kanban Board</span>
-            </button>
-            <span class="nav-section-label" role="presentation">Operations</span>
-            <button class="nav-item" data-section="stations" tabindex="0">
-                <span aria-hidden="true">🔋</span><span class="nav-label">Stations</span>
-            </button>
-            <button class="nav-item" data-section="inventory" tabindex="0">
-                <span aria-hidden="true">📦</span><span class="nav-label">Inventory</span>
-            </button>
-            <button class="nav-item" data-section="ranking" tabindex="0">
-                <span aria-hidden="true">🏆</span><span class="nav-label">Ranking</span>
-            </button>
-            <button class="nav-item" data-section="reports" tabindex="0">
-                <span aria-hidden="true">📈</span><span class="nav-label">Reports</span>
-            </button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 8h10M7 12h10M7 16h6"/></svg><span class="sidebar-logo-text">PowerOps</span></div>
+        <nav class="sidebar-nav" id="sidebarNav">
+            <span class="nav-section-label">Overview</span>
+            <button class="nav-item active" data-section="dashboard">📊 Dashboard</button>
+            <button class="nav-item" data-section="calendar">📅 Calendar</button>
+            <button class="nav-item" data-section="kanban">📋 Kanban Board</button>
+            <span class="nav-section-label">Operations</span>
+            <button class="nav-item" data-section="stations">🔋 Stations</button>
+            <button class="nav-item" data-section="inventory">📦 Inventory</button>
+            <button class="nav-item" data-section="technicians">👷 Technicians</button>
+            <button class="nav-item" data-section="deployments">🚀 Deployments</button>
+            <button class="nav-item" data-section="workorders">📋 Work Orders</button>
+            <button class="nav-item" data-section="maintenance">🔧 Maintenance</button>
+            <span class="nav-section-label">Insights</span>
+            <button class="nav-item" data-section="ranking">🏆 Ranking</button>
+            <button class="nav-item" data-section="reports">📈 Reports</button>
+            <button class="nav-item" data-section="settings">⚙️ Settings</button>
         </nav>
-        <div class="sidebar-footer"><span class="sidebar-footer-text">PowerOps v5.0 · Enterprise</span></div>
+        <div style="padding:14px;text-align:center;font-size:0.7rem;color:var(--text-tertiary);">PowerOps v6.1</div>
     </aside>
     <div class="main-wrapper" id="mainWrapper">
-        <nav class="navbar" role="navigation" aria-label="Top navigation">
+        <nav class="navbar">
             <div class="navbar-left">
-                <button class="hamburger" id="hamburgerBtn" aria-label="Toggle sidebar menu" aria-expanded="false" tabindex="0">☰</button>
-                <div class="search-container">
-                    <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input type="text" class="search-input" id="globalSearch" placeholder="Search stations, technicians, inventory…" aria-label="Global search" autocomplete="off">
-                </div>
+                <button class="hamburger" id="hamburgerBtn">☰</button>
+                <div class="search-container"><svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" class="search-input" id="globalSearch" placeholder="Search..."></div>
             </div>
             <div class="navbar-right">
-                <button class="navbar-btn" id="darkToggle" title="Toggle dark mode" aria-label="Toggle dark mode" tabindex="0">🌙</button>
-                <button class="navbar-btn" id="notifBtn" title="Notifications" aria-label="Notifications" tabindex="0">🔔</button>
-                <div class="avatar" id="userAvatar" title="User profile" aria-label="User profile" tabindex="0" role="button">OP</div>
+                <button class="navbar-btn" id="darkToggle">🌙</button>
+                <button class="navbar-btn" id="notifBtn">🔔</button>
+                <div class="avatar" id="userAvatar">OP</div>
             </div>
         </nav>
         <div class="content-area" id="contentArea">
-            <section class="section active" id="section-dashboard" aria-label="Dashboard">
-                <div class="page-header">
-                    <div>
-                        <div class="page-title">Dashboard Overview</div>
-                        <div class="page-subtitle">Real-time power bank station &amp; deployment metrics</div>
-                    </div>
-                    <span style="font-size:0.72rem;color:var(--text-tertiary)" aria-live="polite">🕐 Live</span>
+            <section class="section active" id="section-dashboard">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+                    <div><div class="page-title">Dashboard Overview</div><div class="page-subtitle">Real-time power bank station & deployment metrics</div></div>
+                    <span style="font-size:0.72rem;color:var(--text-tertiary)">🕐 Live</span>
                 </div>
-                <div class="kpi-grid" id="kpiGrid" aria-label="Key Performance Indicators"></div>
+                <div class="kpi-grid" id="kpiGrid"></div>
                 <div class="charts-grid">
-                    <div class="panel panel-glass"><div class="panel-header"><span class="panel-title">Station Status Distribution</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartStationStatus" aria-label="Doughnut chart showing station status distribution" role="img"></canvas></div></div></div>
-                    <div class="panel panel-glass"><div class="panel-header"><span class="panel-title">Daily Rentals (This Week)</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartDailyRentals" aria-label="Bar chart showing daily rentals" role="img"></canvas></div></div></div>
-                    <div class="panel panel-glass"><div class="panel-header"><span class="panel-title">Inventory Health Trend</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartInventoryHealth" aria-label="Line chart showing inventory health trend" role="img"></canvas></div></div></div>
-                    <div class="panel panel-glass"><div class="panel-header"><span class="panel-title">Technician Activity</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartTechActivity" aria-label="Bar chart showing technician activity" role="img"></canvas></div></div></div>
+                    <div class="panel"><div class="panel-header"><span class="panel-title">Station Status</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartStationStatus"></canvas></div></div></div>
+                    <div class="panel"><div class="panel-header"><span class="panel-title">Daily Rentals</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartDailyRentals"></canvas></div></div></div>
+                    <div class="panel"><div class="panel-header"><span class="panel-title">Inventory Health</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartInventoryHealth"></canvas></div></div></div>
+                    <div class="panel"><div class="panel-header"><span class="panel-title">Technician Activity</span></div><div class="panel-body"><div class="chart-wrap"><canvas id="chartTechActivity"></canvas></div></div></div>
                 </div>
-                <div class="panel panel-glass"><div class="panel-header"><span class="panel-title">📍 Deployment Map — Greater Jakarta</span></div><div class="panel-body no-padding"><div class="sim-map" id="simMap" aria-label="Simulated deployment map of Greater Jakarta area"><div class="map-marker" style="left:36%;top:40%;" data-city="Jakarta Pusat" aria-label="Jakarta marker"><div class="map-dot" style="background:#1d4ed8;"></div><span class="map-label">Jakarta · 8</span></div><div class="map-marker" style="left:60%;top:54%;" data-city="Bandung" aria-label="Bandung marker"><div class="map-dot" style="background:#0f766e;"></div><span class="map-label">Bandung · 5</span></div><div class="map-marker" style="left:48%;top:32%;" data-city="Bekasi" aria-label="Bekasi marker"><div class="map-dot" style="background:#b45309;"></div><span class="map-label">Bekasi · 3</span></div><div class="map-marker" style="left:20%;top:36%;" data-city="Tangerang" aria-label="Tangerang marker"><div class="map-dot" style="background:#6d28d9;"></div><span class="map-label">Tangerang · 4</span></div><div class="map-marker" style="left:50%;top:46%;" data-city="Depok" aria-label="Depok marker"><div class="map-dot" style="background:#b91c1c;"></div><span class="map-label">Depok · 2</span></div></div></div></div>
-            </section>
-            <section class="section" id="section-calendar" aria-label="Calendar Schedule">
-                <div class="page-header"><div><div class="page-title">Monthly Calendar Scheduler</div><div class="page-subtitle">Manage deployment &amp; maintenance schedules</div></div></div>
-                <div class="panel"><div class="panel-body no-padding"><div id="calendar" class="calendar-container" aria-label="Interactive calendar"></div></div></div>
-            </section>
-            <section class="section" id="section-kanban" aria-label="Kanban Task Board">
-                <div class="page-header"><div><div class="page-title">Kanban Task Board</div><div class="page-subtitle">Drag &amp; drop to manage tasks</div></div></div>
-                <div class="kanban-board" id="kanbanBoard" aria-label="Kanban board with To Do, In Progress, and Done columns">
-                    <div class="kanban-column" id="column-todo" aria-label="To Do column"><div class="kanban-title">📌 To Do</div></div>
-                    <div class="kanban-column" id="column-progress" aria-label="In Progress column"><div class="kanban-title">🔄 In Progress</div></div>
-                    <div class="kanban-column" id="column-done" aria-label="Done column"><div class="kanban-title">✅ Done</div></div>
+                <div class="panel">
+                    <div class="panel-header"><span class="panel-title">📍 Deployment Map</span></div>
+                    <div class="panel-body no-padding">
+                        <div class="map-wrapper" id="leafletMapContainer">
+                            <div id="leafletMap" style="height:100%"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
-            <section class="section" id="section-stations" aria-label="Recharge Stations">
-                <div class="page-header"><div><div class="page-title">🔋 Recharge Station Monitoring</div><div class="page-subtitle">Online/Offline station health &amp; slot availability</div></div></div>
-                <div class="panel"><div class="panel-header"><span class="panel-title">All Stations</span></div><div class="panel-body"><table aria-label="Stations table"><thead><tr><th>Station ID</th><th>Location</th><th>Total Slots</th><th>Available</th><th>Status</th><th>Last Maintenance</th></tr></thead><tbody id="stationsTableBody"></tbody></table><div id="stationsNoResults" class="no-results" style="display:none">No stations match your search.</div></div></div>
-            </section>
-            <section class="section" id="section-inventory" aria-label="Power Bank Inventory">
-                <div class="page-header"><div><div class="page-title">📦 Power Bank Inventory</div><div class="page-subtitle">Track individual power bank health &amp; cycles</div></div></div>
-                <div class="panel"><div class="panel-header"><span class="panel-title">Inventory List</span></div><div class="panel-body"><table aria-label="Inventory table"><thead><tr><th>Bank ID</th><th>Station</th><th>Health %</th><th>Cycles</th><th>Status</th></tr></thead><tbody id="inventoryTableBody"></tbody></table><div id="inventoryNoResults" class="no-results" style="display:none">No inventory items match your search.</div></div></div>
-            </section>
-            <section class="section" id="section-ranking" aria-label="Technician Performance Ranking">
-                <div class="page-header"><div><div class="page-title">🏆 Technician Performance Ranking</div><div class="page-subtitle">Top performers based on completed tasks</div></div></div>
-                <div class="panel"><div class="panel-header"><span class="panel-title">Leaderboard</span></div><div class="panel-body" id="rankingList" aria-label="Technician ranking list"></div></div>
-            </section>
-            <section class="section" id="section-reports" aria-label="Reports and Exports">
-                <div class="page-header"><div><div class="page-title">📈 Reports &amp; Exports</div><div class="page-subtitle">Generate operational reports</div></div></div>
-                <div class="report-grid">
-                    <div class="report-card" aria-label="Station Report"><div class="report-icon blue">🔋</div><strong>Station Report</strong><span style="font-size:0.7rem;color:var(--text-tertiary)">Station health analytics</span><div style="display:flex;gap:5px;margin-top:4px"><button class="btn btn-sm" onclick="window._exportExcel('stations')" aria-label="Export stations to Excel">📥 Excel</button><button class="btn btn-sm" onclick="window._exportPDF('stations')" aria-label="Export stations to PDF">📄 PDF</button></div></div>
-                    <div class="report-card" aria-label="Inventory Report"><div class="report-icon green">📦</div><strong>Inventory Report</strong><span style="font-size:0.7rem;color:var(--text-tertiary)">Power bank inventory</span><div style="display:flex;gap:5px;margin-top:4px"><button class="btn btn-sm" onclick="window._exportExcel('inventory')" aria-label="Export inventory to Excel">📥 Excel</button><button class="btn btn-sm" onclick="window._exportPDF('inventory')" aria-label="Export inventory to PDF">📄 PDF</button></div></div>
-                    <div class="report-card" aria-label="Technician Report"><div class="report-icon purple">👷</div><strong>Technician Report</strong><span style="font-size:0.7rem;color:var(--text-tertiary)">Performance metrics</span><div style="display:flex;gap:5px;margin-top:4px"><button class="btn btn-sm" onclick="window._exportExcel('ranking')" aria-label="Export ranking to Excel">📥 Excel</button><button class="btn btn-sm" onclick="window._exportPDF('ranking')" aria-label="Export ranking to PDF">📄 PDF</button></div></div>
-                    <div class="report-card" aria-label="Maintenance Report"><div class="report-icon teal">🔧</div><strong>Maintenance Report</strong><span style="font-size:0.7rem;color:var(--text-tertiary)">Maintenance log</span><div style="display:flex;gap:5px;margin-top:4px"><button class="btn btn-sm" onclick="window._exportExcel('maintenance')" aria-label="Export maintenance to Excel">📥 Excel</button><button class="btn btn-sm" onclick="window._exportPDF('maintenance')" aria-label="Export maintenance to PDF">📄 PDF</button></div></div>
-                </div>
-            </section>
+            <section class="section" id="section-calendar"><div><div class="page-title">Monthly Calendar</div><div class="page-subtitle">Deployment & maintenance schedule</div></div><div class="panel"><div class="panel-body no-padding"><div id="calendar" class="calendar-container"></div></div></div></section>
+            <section class="section" id="section-kanban"><div><div class="page-title">Kanban Task Board</div><div class="page-subtitle">Drag & drop tasks</div></div><div class="kanban-board" id="kanbanBoard"><div class="kanban-column" id="column-todo"><div class="kanban-title">📌 To Do</div></div><div class="kanban-column" id="column-progress"><div class="kanban-title">🔄 In Progress</div></div><div class="kanban-column" id="column-done"><div class="kanban-title">✅ Done</div></div></div></section>
+            <section class="section" id="section-stations"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="page-title">🔋 Recharge Stations</div><div class="page-subtitle">Monitor & manage stations</div></div><div class="section-header-actions"><button class="btn btn-primary btn-sm" onclick="openModal('station')">+ Add Station</button></div></div><div class="panel"><div class="panel-body"><table><thead><tr><th>ID</th><th>Location</th><th>Slots</th><th>Available</th><th>Status</th><th>Last Maintenance</th><th style="width:100px">Actions</th></tr></thead><tbody id="stationsTableBody"></tbody></table><div id="stationsNoResults" class="no-results" style="display:none">No stations found.</div></div></div></section>
+            <section class="section" id="section-inventory"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="page-title">📦 Power Bank Inventory</div><div class="page-subtitle">Track power bank health</div></div><div class="section-header-actions"><button class="btn btn-primary btn-sm" onclick="openModal('inventory')">+ Add Power Bank</button></div></div><div class="panel"><div class="panel-body"><table><thead><tr><th>Bank ID</th><th>Station</th><th>Health</th><th>Cycles</th><th>Status</th><th style="width:100px">Actions</th></tr></thead><tbody id="inventoryTableBody"></tbody></table></div></div></section>
+            <section class="section" id="section-technicians"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="page-title">👷 Technicians</div><div class="page-subtitle">Manage field technicians</div></div><div class="section-header-actions"><button class="btn btn-primary btn-sm" onclick="openModal('technician')">+ Add Technician</button></div></div><div class="panel"><div class="panel-body"><table><thead><tr><th>Name</th><th>Employee ID</th><th>Skill</th><th>Phone</th><th>Status</th><th>Tasks</th><th style="width:100px">Actions</th></tr></thead><tbody id="techniciansTableBody"></tbody></table></div></div></section>
+            <section class="section" id="section-deployments"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="page-title">🚀 Deployments</div><div class="page-subtitle">Manage field deployments</div></div><div class="section-header-actions"><button class="btn btn-primary btn-sm" onclick="openModal('deployment')">+ New Deployment</button></div></div><div class="panel"><div class="panel-body"><table><thead><tr><th>Location</th><th>Task</th><th>Technician</th><th>Date</th><th>Time</th><th>Priority</th><th>Status</th><th style="width:100px">Actions</th></tr></thead><tbody id="deploymentsTableBody"></tbody></table></div></div></section>
+            <section class="section" id="section-workorders"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="page-title">📋 Work Orders</div><div class="page-subtitle">Track work orders</div></div><div class="section-header-actions"><button class="btn btn-primary btn-sm" onclick="openModal('workorder')">+ New Work Order</button></div></div><div class="panel"><div class="panel-body"><table><thead><tr><th>WO Number</th><th>Location</th><th>Technician</th><th>Priority</th><th>Deadline</th><th>Status</th><th style="width:100px">Actions</th></tr></thead><tbody id="workordersTableBody"></tbody></table></div></div></section>
+            <section class="section" id="section-maintenance"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px"><div><div class="page-title">🔧 Maintenance Tasks</div><div class="page-subtitle">Preventive & corrective</div></div><div class="section-header-actions"><button class="btn btn-primary btn-sm" onclick="openModal('maintenance')">+ New Task</button></div></div><div class="panel"><div class="panel-body"><table><thead><tr><th>Machine</th><th>Location</th><th>Type</th><th>Technician</th><th>Date</th><th>Status</th><th style="width:100px">Actions</th></tr></thead><tbody id="maintenanceTableBody"></tbody></table></div></div></section>
+            <section class="section" id="section-ranking"><div><div class="page-title">🏆 Technician Ranking</div><div class="page-subtitle">Performance leaderboard</div></div><div class="panel"><div class="panel-body" id="rankingList"></div></div></section>
+            <section class="section" id="section-reports"><div><div class="page-title">📈 Reports & Exports</div><div class="page-subtitle">Generate operational reports</div></div><div class="report-grid">
+                    <div class="report-card"><strong>Station Report</strong><div style="display:flex;gap:5px;margin-top:8px"><button class="btn btn-sm" onclick="exportExcel('stations')">📥 Excel</button><button class="btn btn-sm" onclick="exportPDF('stations')">📄 PDF</button></div></div>
+                    <div class="report-card"><strong>Inventory Report</strong><div style="display:flex;gap:5px;margin-top:8px"><button class="btn btn-sm" onclick="exportExcel('inventory')">📥 Excel</button><button class="btn btn-sm" onclick="exportPDF('inventory')">📄 PDF</button></div></div>
+                    <div class="report-card"><strong>Technician Report</strong><div style="display:flex;gap:5px;margin-top:8px"><button class="btn btn-sm" onclick="exportExcel('technicians')">📥 Excel</button><button class="btn btn-sm" onclick="exportPDF('technicians')">📄 PDF</button></div></div>
+                    <div class="report-card"><strong>Deployment Report</strong><div style="display:flex;gap:5px;margin-top:8px"><button class="btn btn-sm" onclick="exportExcel('deployments')">📥 Excel</button><button class="btn btn-sm" onclick="exportPDF('deployments')">📄 PDF</button></div></div>
+            </div></section>
+            <section class="section" id="section-settings"><div><div class="page-title">⚙️ Settings</div><div class="page-subtitle">System configuration & data management</div></div><div class="panel" style="max-width:600px"><div class="panel-body" style="display:flex;flex-direction:column;gap:12px">
+                    <div style="display:flex;justify-content:space-between;align-items:center"><span>Dark Mode</span><button class="btn btn-sm" id="settingsDarkToggle">Toggle</button></div>
+                    <hr style="border-color:var(--border-light)">
+                    <div style="display:flex;justify-content:space-between;align-items:center"><span>Export All Data (JSON)</span><button class="btn btn-sm btn-primary" onclick="exportJSON()">📥 Export JSON</button></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center"><span>Import Data (JSON)</span><button class="btn btn-sm" onclick="document.getElementById('importFileInput').click()">📤 Import JSON</button><input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importJSON(event)"></div>
+                    <hr style="border-color:var(--border-light)">
+                    <div style="display:flex;justify-content:space-between;align-items:center"><span style="color:var(--danger)">Reset All Data</span><button class="btn btn-sm btn-danger" onclick="confirmReset()">🔄 Reset Database</button></div>
+            </div></div></section>
         </div>
     </div>
-    <div class="toast-container" id="toastContainer" aria-live="polite" aria-relevant="additions"></div>
+    <div class="toast-container" id="toastContainer"></div>
+    <div class="modal-overlay hidden" id="modalOverlay">
+        <div class="modal" id="modalContent"></div>
+    </div>
+    <div class="modal-overlay hidden" id="confirmModalOverlay">
+        <div class="modal" style="max-width:400px">
+            <div class="modal-header"><span>⚠️ Confirm</span><button class="modal-close" onclick="closeConfirmModal()">×</button></div>
+            <div class="modal-body"><p id="confirmMessage">Are you sure?</p></div>
+            <div class="modal-footer"><button class="btn" onclick="closeConfirmModal()">Cancel</button><button class="btn btn-danger" id="confirmActionBtn">Confirm</button></div>
+        </div>
+    </div>
     <script>
         (() => {
             const $ = s => document.querySelector(s),
                 $$ = s => document.querySelectorAll(s);
-            const loadingScreen = $('#loading-screen');
-            const sidebar = $('#sidebar');
-            const sidebarOverlay = $('#sidebarOverlay');
-            const mainWrapper = $('#mainWrapper');
-            const hamburgerBtn = $('#hamburgerBtn');
-            const darkToggle = $('#darkToggle');
-            const globalSearch = $('#globalSearch');
-            const toastContainer = $('#toastContainer');
-            const navItems = $$('.nav-item');
-            const sections = $$('.section');
+            const LS_KEY = 'powerops_db';
             let darkMode = false;
-            let sidebarCollapsed = false;
-            let mobileMenuOpen = false;
             let currentSection = 'dashboard';
             const charts = {};
-            let searchDebounceTimer = null;
+            let searchDebounce = null;
+            let calendarInstance = null;
+            let leafletMap = null;
+            let leafletMarkers = [];
+            let confirmCallback = null;
 
-            const stationsData = [
-                { id: 'ST-001', location: 'Grand Indonesia Mall', slots: 24, available: 8, status: 'Online',
-                    lastMaint: '2026-06-07' },
-                { id: 'ST-002', location: 'Plaza Indonesia', slots: 20, available: 3, status: 'Online',
-                    lastMaint: '2026-06-06' },
-                { id: 'ST-003', location: 'Mall Kelapa Gading', slots: 16, available: 0, status: 'Offline',
-                    lastMaint: '2026-06-05' },
-                { id: 'ST-004', location: 'Bandung Indah Plaza', slots: 18, available: 12, status: 'Online',
-                    lastMaint: '2026-06-04' },
-                { id: 'ST-005', location: 'Bekasi Cyber Park', slots: 12, available: 5, status: 'Maintenance',
-                    lastMaint: '2026-06-03' },
-                { id: 'ST-006', location: 'Tangerang City Mall', slots: 22, available: 15, status: 'Online',
-                    lastMaint: '2026-06-02' },
-                { id: 'ST-007', location: 'Depok Town Square', slots: 14, available: 2, status: 'Online',
-                    lastMaint: '2026-06-01' },
-                { id: 'ST-008', location: 'Senayan City', slots: 30, available: 20, status: 'Online',
-                    lastMaint: '2026-05-31' },
-            ];
-            const inventoryData = [
-                { id: 'PB-1001', station: 'ST-001', health: 94, cycles: 120, status: 'Available' },
-                { id: 'PB-1002', station: 'ST-001', health: 82, cycles: 310, status: 'Rented' },
-                { id: 'PB-1003', station: 'ST-002', health: 97, cycles: 45, status: 'Available' },
-                { id: 'PB-1004', station: 'ST-003', health: 68, cycles: 520, status: 'Broken' },
-                { id: 'PB-1005', station: 'ST-004', health: 91, cycles: 200, status: 'Available' },
-                { id: 'PB-1006', station: 'ST-005', health: 55, cycles: 650, status: 'Broken' },
-                { id: 'PB-1007', station: 'ST-006', health: 99, cycles: 10, status: 'Available' },
-                { id: 'PB-1008', station: 'ST-007', health: 88, cycles: 180, status: 'Rented' },
-                { id: 'PB-1009', station: 'ST-008', health: 95, cycles: 90, status: 'Available' },
-            ];
-            const techRankingData = [
-                { name: 'Asep Priyatna', tasksDone: 52, avgTime: '1.2h', rating: 4.9 },
-                { name: 'Rizki Maulana', tasksDone: 48, avgTime: '1.5h', rating: 4.7 },
-                { name: 'Andi Saputra', tasksDone: 45, avgTime: '1.8h', rating: 4.5 },
-                { name: 'Budi Santoso', tasksDone: 40, avgTime: '2.0h', rating: 4.3 },
-                { name: 'Dedi Hermawan', tasksDone: 36, avgTime: '2.2h', rating: 4.1 },
-                { name: 'Eko Prasetyo', tasksDone: 30, avgTime: '2.5h', rating: 3.9 },
-            ];
-            const kanbanTasks = [
-                { id: 'T1', title: 'Replace power bank PB-1004 at ST-003', status: 'progress' },
-                { id: 'T2', title: 'Inspect offline station ST-003 Kelapa Gading', status: 'todo' },
-                { id: 'T3', title: 'Restock Plaza Indonesia station ST-002', status: 'done' },
-                { id: 'T4', title: 'Fix maintenance station ST-005 Bekasi', status: 'progress' },
-                { id: 'T5', title: 'Monthly audit Grand Indonesia ST-001', status: 'todo' },
-                { id: 'T6', title: 'Deploy new station at Kuningan City', status: 'todo' },
-                { id: 'T7', title: 'Replace faulty power banks at ST-007', status: 'done' },
-            ];
-            const maintenanceData = [
-                { machine: 'ST-001', location: 'Grand Indonesia', type: 'Preventive', technician: 'Asep Priyatna',
-                    date: '2026-06-07', status: 'Completed' },
-                { machine: 'ST-003', location: 'Kelapa Gading', type: 'Emergency Repair',
-                    technician: 'Andi Saputra', date: '2026-06-05', status: 'Completed' },
-                { machine: 'ST-005', location: 'Bekasi Cyber Park', type: 'Corrective',
-                    technician: 'Rizki Maulana', date: '2026-06-03', status: 'In Progress' },
-            ];
+            const defaultData = {
+                stations: [
+                    { id: 'ST-001', location: 'Grand Indonesia Mall', slots: 24, available: 8,
+                        status: 'Online', lastMaint: '2026-06-07' },
+                    { id: 'ST-002', location: 'Plaza Indonesia', slots: 20, available: 3,
+                    status: 'Online', lastMaint: '2026-06-06' },
+                    { id: 'ST-003', location: 'Mall Kelapa Gading', slots: 16, available: 0,
+                        status: 'Offline', lastMaint: '2026-06-05' },
+                    { id: 'ST-004', location: 'Bandung Indah Plaza', slots: 18, available: 12,
+                        status: 'Online', lastMaint: '2026-06-04' },
+                    { id: 'ST-005', location: 'Bekasi Cyber Park', slots: 12, available: 5,
+                        status: 'Maintenance', lastMaint: '2026-06-03' },
+                ],
+                inventory: [
+                    { id: 'PB-1001', station: 'ST-001', health: 94, cycles: 120, status: 'Available' },
+                    { id: 'PB-1002', station: 'ST-001', health: 82, cycles: 310, status: 'Rented' },
+                    { id: 'PB-1003', station: 'ST-002', health: 97, cycles: 45, status: 'Available' },
+                    { id: 'PB-1004', station: 'ST-003', health: 68, cycles: 520, status: 'Broken' },
+                    { id: 'PB-1005', station: 'ST-004', health: 91, cycles: 200, status: 'Available' },
+                ],
+                technicians: [
+                    { name: 'Asep Priyatna', empId: 'EMP-001', skill: 'Senior', phone: '0812-3456-7890',
+                        status: 'On Duty', tasks: 8 },
+                    { name: 'Rizki Maulana', empId: 'EMP-002', skill: 'Mid-Level', phone: '0812-3456-7891',
+                        status: 'On Duty', tasks: 5 },
+                    { name: 'Andi Saputra', empId: 'EMP-003', skill: 'Junior', phone: '0812-3456-7892',
+                        status: 'Available', tasks: 3 },
+                    { name: 'Budi Santoso', empId: 'EMP-004', skill: 'Senior', phone: '0812-3456-7893',
+                        status: 'Off Duty', tasks: 0 },
+                    { name: 'Dedi Hermawan', empId: 'EMP-005', skill: 'Mid-Level', phone: '0812-3456-7894',
+                        status: 'On Leave', tasks: 2 },
+                ],
+                deployments: [
+                    { location: 'Jakarta', task: 'Station Inspection', technician: 'Asep Priyatna',
+                        date: '2026-06-09', start: '09:00', end: '12:00', priority: 'High',
+                        status: 'In Progress' },
+                    { location: 'Jakarta', task: 'Restock Power Banks', technician: 'Rizki Maulana',
+                        date: '2026-06-10', start: '13:00', end: '16:00', priority: 'Medium',
+                        status: 'Scheduled' },
+                    { location: 'Bekasi', task: 'Emergency Repair', technician: 'Andi Saputra',
+                    date: '2026-06-11', start: '10:00', end: '14:00', priority: 'High',
+                    status: 'Scheduled' },
+                    { location: 'Depok', task: 'Preventive Maintenance', technician: 'Budi Santoso',
+                        date: '2026-06-12', start: '08:00', end: '11:00', priority: 'Medium',
+                        status: 'Scheduled' },
+                    { location: 'Tangerang', task: 'Station Setup', technician: 'Dedi Hermawan',
+                        date: '2026-06-13', start: '09:30', end: '15:00', priority: 'Low',
+                        status: 'Scheduled' },
+                    { location: 'Bandung', task: 'Inspection', technician: 'Asep Priyatna',
+                    date: '2026-06-14', start: '08:00', end: '12:00', priority: 'Medium',
+                    status: 'Scheduled' },
+                ],
+                workorders: [
+                    { wo: 'WO-2026-001', location: 'Grand Indonesia', technician: 'Asep Priyatna',
+                        priority: 'High', deadline: '2026-06-12', status: 'In Progress' },
+                    { wo: 'WO-2026-002', location: 'Plaza Indonesia', technician: 'Rizki Maulana',
+                        priority: 'Medium', deadline: '2026-06-14', status: 'Open' },
+                ],
+                maintenance: [
+                    { machine: 'ST-001', location: 'Grand Indonesia', type: 'Preventive',
+                        technician: 'Asep Priyatna', date: '2026-06-07', status: 'Completed' },
+                    { machine: 'ST-003', location: 'Kelapa Gading', type: 'Emergency Repair',
+                        technician: 'Andi Saputra', date: '2026-06-05', status: 'Completed' },
+                ],
+                kanban: [
+                    { id: 'T1', title: 'Replace PB-1004 at ST-003', status: 'progress' },
+                    { id: 'T2', title: 'Inspect offline station ST-003', status: 'todo' },
+                    { id: 'T3', title: 'Restock Plaza Indonesia ST-002', status: 'done' },
+                    { id: 'T4', title: 'Fix maintenance station ST-005', status: 'progress' },
+                ],
+            };
+            let db = {};
 
-            function showToast(message, type = 'info') {
-                const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-                const toast = document.createElement('div');
-                toast.className = `toast toast-${type}`;
-                toast.setAttribute('role', 'alert');
-                toast.innerHTML = `
-                    <span class="toast-icon">${icons[type] || icons.info}</span>
-                    <span class="toast-message">${message}</span>
-                    <button class="toast-close" aria-label="Close notification" tabindex="0">×</button>
-                `;
-                toastContainer.appendChild(toast);
-                const closeBtn = toast.querySelector('.toast-close');
-                const removeToast = () => {
-                    toast.classList.add('removing');
-                    setTimeout(() => { if (toast.parentNode) toast.remove(); }, 280);
-                };
-                closeBtn.addEventListener('click', removeToast);
-                const autoRemove = setTimeout(removeToast, 4000);
-                toast.addEventListener('mouseenter', () => clearTimeout(autoRemove));
-                toast.addEventListener('mouseleave', () => {
-                    const newTimeout = setTimeout(removeToast, 3000);
-                    toast.dataset.timeoutId = newTimeout;
-                });
+            function loadDB() {
+                try { const raw = localStorage.getItem(LS_KEY);
+                    db = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultData)); } catch (e) { db =
+                        JSON.parse(JSON.stringify(defaultData)); }
+                if (!db.kanban) db.kanban = JSON.parse(JSON.stringify(defaultData.kanban));
+                Object.keys(defaultData).forEach(k => { if (!db[k]) db[k] = JSON.parse(JSON.stringify(
+                        defaultData[k])); });
             }
-            window.showToast = showToast;
 
-            function toggleDarkMode() {
+            function saveDB() { localStorage.setItem(LS_KEY, JSON.stringify(db)); }
+
+            function resetDB() { db = JSON.parse(JSON.stringify(defaultData));
+                saveDB();
+                refreshAll(); }
+
+            function refreshAll() {
+                renderKPIs();
+                destroyCharts();
+                createCharts();
+                renderStationsTable();
+                renderInventoryTable();
+                renderTechniciansTable();
+                renderDeploymentsTable();
+                renderWorkOrdersTable();
+                renderMaintenanceTable();
+                renderRanking();
+                renderKanban();
+                renderCalendarEvents();
+                updateMapMarkers();
+            }
+
+            function showToast(msg, type = 'info') {
+                const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+                const t = document.createElement('div');
+                t.className = `toast toast-${type}`;
+                t.innerHTML =
+                    `<span>${icons[type]}</span><span style="flex:1">${msg}</span><button class="toast-close">×</button>`;
+                $('#toastContainer').appendChild(t);
+                const close = () => { t.classList.add('removing');
+                    setTimeout(() => t.remove(), 280); };
+                t.querySelector('.toast-close').addEventListener('click', close);
+                const timer = setTimeout(close, 4000);
+                t.addEventListener('mouseenter', () => clearTimeout(timer));
+            }
+
+            function toggleDark() {
                 darkMode = !darkMode;
                 document.body.classList.toggle('dark-mode', darkMode);
                 localStorage.setItem('powerops-dark', darkMode ? '1' : '0');
-                updateDarkIcon();
+                $('#darkToggle').textContent = darkMode ? '☀️' : '🌙';
                 destroyCharts();
                 createCharts();
+                if (leafletMap) {
+                    updateMapTiles();
+                    leafletMap.invalidateSize();
+                }
             }
-
-            function updateDarkIcon() {
-                darkToggle.textContent = darkMode ? '☀️' : '🌙';
-            }
-            darkToggle.addEventListener('click', toggleDarkMode);
-            if (localStorage.getItem('powerops-dark') === '1') {
-                darkMode = true;
+            $('#darkToggle').addEventListener('click', toggleDark);
+            $('#settingsDarkToggle')?.addEventListener('click', toggleDark);
+            if (localStorage.getItem('powerops-dark') === '1') { darkMode = true;
                 document.body.classList.add('dark-mode');
-            }
-            updateDarkIcon();
+                $('#darkToggle').textContent = '☀️'; }
 
             function navigateTo(name) {
                 currentSection = name;
-                sections.forEach(s => s.classList.remove('active'));
+                $$('.section').forEach(s => s.classList.remove('active'));
                 const target = $('#section-' + name);
                 if (target) target.classList.add('active');
-                navItems.forEach(n => {
-                    n.classList.remove('active');
-                    n.removeAttribute('aria-current');
-                });
-                const activeNav = document.querySelector(`[data-section="${name}"]`);
-                if (activeNav) { activeNav.classList.add('active');
-                    activeNav.setAttribute('aria-current', 'page'); }
-                if (mobileMenuOpen) closeMobileMenu();
-                globalSearch.value = '';
-                clearSearchHighlights();
-                if (name === 'dashboard') { renderKPIs();
+                $$('.nav-item').forEach(n => n.classList.remove('active'));
+                const nav = document.querySelector(`[data-section="${name}"]`);
+                if (nav) nav.classList.add('active');
+                if (window.innerWidth <= 1100 && $('#sidebar').classList.contains('mobile-open'))
+            closeMobileMenu();
+                $('#globalSearch').value = '';
+                if (name === 'dashboard') {
+                    renderKPIs();
                     destroyCharts();
-                    createCharts(); }
+                    createCharts();
+                    if (!leafletMap) initMap();
+                    else { leafletMap.invalidateSize();
+                        updateMapMarkers(); }
+                }
                 if (name === 'calendar') renderCalendar();
                 if (name === 'kanban') renderKanban();
-                if (name === 'stations') renderStations();
-                if (name === 'inventory') renderInventory();
+                if (name === 'stations') renderStationsTable();
+                if (name === 'inventory') renderInventoryTable();
+                if (name === 'technicians') renderTechniciansTable();
+                if (name === 'deployments') renderDeploymentsTable();
+                if (name === 'workorders') renderWorkOrdersTable();
+                if (name === 'maintenance') renderMaintenanceTable();
                 if (name === 'ranking') renderRanking();
                 document.getElementById('contentArea').scrollTop = 0;
             }
-            navItems.forEach(item => {
-                item.addEventListener('click', () => navigateTo(item.getAttribute('data-section')));
-                item.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault();
-                        navigateTo(item.getAttribute('data-section')); }
-                });
-            });
+            $$('.nav-item').forEach(item => item.addEventListener('click', () => navigateTo(item.dataset
+            .section)));
 
-            function openMobileMenu() {
-                mobileMenuOpen = true;
-                sidebar.classList.add('mobile-open');
-                sidebar.classList.remove('collapsed');
-                sidebarOverlay.classList.add('show');
-                document.body.style.overflow = 'hidden';
-                hamburgerBtn.setAttribute('aria-expanded', 'true');
-            }
+            function openMobileMenu() { $('#sidebar').classList.add('mobile-open');
+                $('#sidebarOverlay').classList.add('show');
+                document.body.style.overflow = 'hidden'; }
 
-            function closeMobileMenu() {
-                mobileMenuOpen = false;
-                sidebar.classList.remove('mobile-open');
-                sidebarOverlay.classList.remove('show');
-                document.body.style.overflow = '';
-                hamburgerBtn.setAttribute('aria-expanded', 'false');
+            function closeMobileMenu() { $('#sidebar').classList.remove('mobile-open');
+                $('#sidebarOverlay').classList.remove('show');
+                document.body.style.overflow = ''; }
+            $('#hamburgerBtn').addEventListener('click', () => { if (window.innerWidth <= 1100) { $(
+                        '#sidebar').classList.contains('mobile-open') ? closeMobileMenu() :
+                    openMobileMenu(); } else { const s = $('#sidebar'),
+                        m = $('#mainWrapper');
+                    s.classList.toggle('collapsed');
+                    m.classList.toggle('expanded');
+                    setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 300); } });
+            $('#sidebarOverlay').addEventListener('click', closeMobileMenu);
+
+            function getBadgeClass(status) {
+                const map = { 'Online': 'success', 'Available': 'success', 'Completed': 'success',
+                    'Active': 'success', 'On Duty': 'info', 'In Progress': 'info', 'Scheduled': 'info',
+                    'Open': 'warning', 'Rented': 'warning', 'Medium': 'warning', 'Offline': 'danger',
+                    'Broken': 'danger', 'Error': 'danger', 'High': 'danger', 'Off Duty': 'neutral',
+                    'On Leave': 'neutral', 'Low': 'success', 'Maintenance': 'warning', 'Closed': 'neutral',
+                    'Done': 'success', 'todo': 'neutral', 'progress': 'info', 'done': 'success' };
+                return 'badge-' + (map[status] || 'neutral');
             }
-            hamburgerBtn.addEventListener('click', () => {
-                if (window.innerWidth <= 1100) {
-                    mobileMenuOpen ? closeMobileMenu() : openMobileMenu();
-                } else {
-                    sidebarCollapsed = !sidebarCollapsed;
-                    sidebar.classList.toggle('collapsed', sidebarCollapsed);
-                    mainWrapper.classList.toggle('expanded', sidebarCollapsed);
-                }
-            });
-            sidebarOverlay.addEventListener('click', closeMobileMenu);
-            window.addEventListener('resize', () => {
-                if (window.innerWidth > 1100 && mobileMenuOpen) closeMobileMenu();
-            });
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && mobileMenuOpen) closeMobileMenu();
-            });
 
             function renderKPIs() {
                 const grid = $('#kpiGrid');
                 if (!grid) return;
-                const onlineCount = stationsData.filter(s => s.status === 'Online').length;
-                const offlineCount = stationsData.filter(s => s.status === 'Offline').length;
-                const availablePB = inventoryData.filter(i => i.status === 'Available').length;
-                const rentedPB = inventoryData.filter(i => i.status === 'Rented').length;
-                const brokenPB = inventoryData.filter(i => i.status === 'Broken').length;
-                const totalRentalsWeek = 1250;
-                const uptimePercent = Math.round((onlineCount / stationsData.length) * 100);
+                const online = db.stations.filter(s => s.status === 'Online').length;
+                const availPB = db.inventory.filter(i => i.status === 'Available').length;
+                const rentedPB = db.inventory.filter(i => i.status === 'Rented').length;
+                const activeDeploy = db.deployments.filter(d => d.status === 'In Progress' || d.status ===
+                    'Scheduled').length;
+                const openWO = db.workorders.filter(w => w.status === 'Open').length;
+                const activeTech = db.technicians.filter(t => t.status === 'On Duty').length;
+                const uptime = Math.round((online / Math.max(db.stations.length, 1)) * 100);
                 grid.innerHTML = [
-                    { value: stationsData.length, label: 'Total Stations', trend: '↑', icon: '🔋',
-                        iconClass: 'blue' },
-                    { value: onlineCount, label: 'Online Stations', trend: '→', icon: '✅',
-                    iconClass: 'green' },
-                    { value: availablePB, label: 'Available Power Banks', trend: '↑', icon: '🔌',
-                        iconClass: 'teal' },
-                    { value: rentedPB, label: 'Currently Rented', trend: '↓', icon: '📤',
-                    iconClass: 'warning' },
-                    { value: 42, label: "Today's Rentals", trend: '↑', icon: '📈', iconClass: 'blue' },
-                    { value: totalRentalsWeek, label: 'Total Rentals (Week)', trend: '↑', icon: '📊',
-                        iconClass: 'purple' },
-                    { value: uptimePercent + '%', label: 'Station Uptime', trend: '→', icon: '🛡️',
-                        iconClass: 'green' },
-                    { value: techRankingData.length, label: 'Active Technicians', trend: '→', icon: '👷',
-                        iconClass: 'blue' },
-                ].map(kpi => `
-                    <div class="kpi-card" tabindex="0" role="region" aria-label="${kpi.label}: ${kpi.value}">
-                        <div class="kpi-icon-row">
-                            <div class="kpi-icon ${kpi.iconClass}">${kpi.icon}</div>
-                            <span class="kpi-trend ${kpi.trend==='↑'?'up':kpi.trend==='↓'?'down':'stable'}">${kpi.trend}</span>
-                        </div>
-                        <div class="kpi-value">${kpi.value}</div>
-                        <div class="kpi-label">${kpi.label}</div>
-                    </div>
+                    { v: db.stations.length, l: 'Total Stations', icon: '🔋' },
+                    { v: online, l: 'Online Stations', icon: '✅' },
+                    { v: availPB, l: 'Available Power Banks', icon: '🔌' },
+                    { v: rentedPB, l: 'Currently Rented', icon: '📤' },
+                    { v: activeDeploy, l: 'Active Deployments', icon: '🚀' },
+                    { v: openWO, l: 'Open Work Orders', icon: '📋' },
+                    { v: uptime + '%', l: 'Station Uptime', icon: '🛡️' },
+                    { v: activeTech, l: 'Active Technicians', icon: '👷' },
+                ].map(k => `
+                <div class="kpi-card"><div style="display:flex;justify-content:space-between"><span>${k.icon}</span><span class="badge badge-info">→</span></div><div class="kpi-value">${k.v}</div><div class="kpi-label">${k.l}</div></div>
                 `).join('');
             }
 
             function destroyCharts() {
-                Object.values(charts).forEach(chart => {
-                    if (chart && typeof chart.destroy === 'function') {
-                        try { chart.destroy(); } catch (e) {}
-                    }
-                });
-                Object.keys(charts).forEach(key => {
-                    delete charts[key];
-                });
+                Object.values(charts).forEach(c => { if (c && typeof c.destroy === 'function') try { c
+                    .destroy(); } catch (e) {} });
+                Object.keys(charts).forEach(k => delete charts[k]);
             }
 
             function createCharts() {
@@ -1697,468 +1194,490 @@
                     warning: '#b45309',
                     danger: '#b91c1c',
                     purple: '#6d28d9',
-                    teal: '#0e7490',
+                    teal: '#0e7490'
                 };
                 const ff = "'Inter', sans-serif";
                 const tooltipBg = darkMode ? '#1e293b' : '#fff';
-                const tooltipBody = darkMode ? '#cbd5e1' : '#475569';
-                const tooltip = {
-                    backgroundColor: tooltipBg,
-                    titleColor: darkMode ? '#f1f5f9' : '#0f172a',
-                    bodyColor: tooltipBody,
-                    borderColor: darkMode ? '#334155' : '#e3e8f0',
-                    borderWidth: 1,
-                    cornerRadius: 8,
-                    padding: 10,
-                };
-                const scales = {
-                    x: { grid: { color: c.grid, drawBorder: false }, ticks: { color: c.text,
-                            font: { family: ff, size: 10.5 }, padding: 8 }, border: { display: false } },
-                    y: { grid: { color: c.grid, drawBorder: false }, ticks: { color: c.text,
-                            font: { family: ff, size: 10.5 }, padding: 8 }, border: { display: false } },
-                };
+                const tooltip = { backgroundColor: tooltipBg, titleColor: darkMode ? '#f1f5f9' : '#0f172a',
+                    bodyColor: darkMode ? '#cbd5e1' : '#475569', borderColor: darkMode ? '#334155' :
+                    '#e3e8f0', borderWidth: 1, cornerRadius: 8 };
+                const scales = { x: { grid: { color: c.grid }, ticks: { color: c.text,
+                        font: { family: ff, size: 10 } } }, y: { grid: { color: c.grid },
+                        ticks: { color: c.text, font: { family: ff, size: 10 } } } };
                 const ctx1 = document.getElementById('chartStationStatus');
                 if (ctx1 && !charts.station) {
-                    const onlineCount = stationsData.filter(s => s.status === 'Online').length;
-                    const offlineCount = stationsData.filter(s => s.status === 'Offline').length;
-                    const maintCount = stationsData.filter(s => s.status === 'Maintenance').length;
-                    charts.station = new Chart(ctx1, {
-                        type: 'doughnut',
-                        data: { labels: ['Online', 'Offline', 'Maintenance'],
-                            datasets: [{ data: [onlineCount, offlineCount, maintCount],
-                                backgroundColor: [c.green, c.danger, c.warning], borderWidth: 3,
-                                borderColor: darkMode ? '#0f1829' : '#fff',
-                                hoverBorderColor: darkMode ? '#1d2d47' : '#e3e8f0' }] },
+                    const on = db.stations.filter(s => s.status === 'Online').length;
+                    const off = db.stations.filter(s => s.status === 'Offline').length;
+                    const mt = db.stations.filter(s => s.status === 'Maintenance').length;
+                    charts.station = new Chart(ctx1, { type: 'doughnut', data: { labels: ['Online', 'Offline',
+                                'Maintenance'
+                            ], datasets: [{ data: [on, off, mt], backgroundColor: [c.green, c.danger,
+                                    c.warning
+                                ], borderWidth: 3, borderColor: darkMode ? '#0f1829' : '#fff' }] },
                         options: { responsive: true, maintainAspectRatio: false,
                             plugins: { legend: { position: 'bottom', labels: { color: c.text,
-                                        usePointStyle: true, pointStyleWidth: 8,
-                                        font: { family: ff, size: 11 }, padding: 18 } },
-                                tooltip },
-                            cutout: '62%', animation: { animateRotate: true, duration: 1000,
-                                easing: 'easeOutQuart' } },
-                    });
+                                        font: { family: ff, size: 11 } } }, tooltip },
+                            cutout: '62%' } });
                 }
                 const ctx2 = document.getElementById('chartDailyRentals');
                 if (ctx2 && !charts.rentals) {
-                    charts.rentals = new Chart(ctx2, {
-                        type: 'bar',
-                        data: { labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                            datasets: [{ label: 'Rentals', data: [120, 155, 182, 170, 205, 228,
-                                    195
-                                ], backgroundColor: c.blue, borderRadius: 7,
-                                borderSkipped: false, barThickness: 18,
-                                hoverBackgroundColor: darkMode ? '#2563eb' : '#1e40af' }] },
+                    charts.rentals = new Chart(ctx2, { type: 'bar', data: { labels: ['Mon', 'Tue', 'Wed', 'Thu',
+                                'Fri', 'Sat', 'Sun'
+                            ], datasets: [{ data: [120, 155, 182, 170, 205, 228, 195],
+                                backgroundColor: c.blue, borderRadius: 7 }] },
                         options: { responsive: true, maintainAspectRatio: false,
-                            plugins: { legend: { display: false }, tooltip }, scales,
-                            animation: { duration: 800, easing: 'easeOutQuart' } },
-                    });
+                            plugins: { legend: { display: false }, tooltip }, scales } });
                 }
                 const ctx3 = document.getElementById('chartInventoryHealth');
                 if (ctx3 && !charts.health) {
-                    charts.health = new Chart(ctx3, {
-                        type: 'line',
-                        data: { labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                            datasets: [{ label: 'Avg Health %', data: [93, 90, 88, 87],
-                                borderColor: c.purple, backgroundColor: darkMode ?
-                                    'rgba(109,40,217,0.15)' : 'rgba(109,40,217,0.08)',
-                                fill: true, tension: 0.4, pointRadius: 5,
-                                pointBackgroundColor: c.purple, borderWidth: 2.8,
-                                pointHoverRadius: 7 }] },
+                    charts.health = new Chart(ctx3, { type: 'line', data: { labels: ['W1', 'W2', 'W3', 'W4'],
+                            datasets: [{ data: [93, 90, 88, 87], borderColor: c.purple,
+                                backgroundColor: darkMode ? 'rgba(109,40,217,0.15)' :
+                                'rgba(109,40,217,0.08)', fill: true, tension: 0.4,
+                                pointRadius: 4, borderWidth: 2.5 }] },
                         options: { responsive: true, maintainAspectRatio: false,
-                            plugins: { legend: { display: false },
-                                tooltip: { ...tooltip,
-                                    callbacks: { label: ctx => ctx.parsed.y + '%' } } },
-                            scales: { x: { ...scales.x }, y: { ...scales.y, min: 75,
-                                    max: 100,
-                                    ticks: { ...scales.y.ticks,
-                                        callback: v => v + '%' } } },
-                            animation: { duration: 900, easing: 'easeOutQuart' } },
-                    });
+                            plugins: { legend: { display: false }, tooltip }, scales: { x: { ...scales
+                                    .x }, y: { ...scales.y, min: 75, max: 100 } } } });
                 }
                 const ctx4 = document.getElementById('chartTechActivity');
                 if (ctx4 && !charts.tech) {
-                    charts.tech = new Chart(ctx4, {
-                        type: 'bar',
-                        data: { labels: techRankingData.map(t => t.name.split(' ')[0]),
-                            datasets: [{ label: 'Tasks Completed',
-                                data: techRankingData.map(t => t.tasksDone),
-                                backgroundColor: [c.teal, c.blue, c.green, c.purple, c
-                                    .warning, c.danger
-                                ], borderRadius: 7, borderSkipped: false,
-                                barThickness: 20 }] },
-                        options: { indexAxis: 'y', responsive: true,
-                            maintainAspectRatio: false, plugins: { legend: { display: false },
-                                tooltip }, scales: { x: { ...scales.x, grid: { color: c.grid,
-                                        drawBorder: false }, ticks: { ...scales.x.ticks,
-                                        stepSize: 10 } }, y: { ...scales.y,
-                                    grid: { display: false } } },
-                            animation: { duration: 800, easing: 'easeOutQuart' } },
-                    });
+                    const names = db.technicians.map(t => t.name.split(' ')[0]);
+                    const tasks = db.technicians.map(t => t.tasks);
+                    charts.tech = new Chart(ctx4, { type: 'bar', data: { labels: names,
+                            datasets: [{ data: tasks, backgroundColor: [c.teal, c.blue, c.green, c
+                                    .purple, c.warning
+                                ], borderRadius: 7 }] }, options: { indexAxis: 'y',
+                            responsive: true, maintainAspectRatio: false,
+                            plugins: { legend: { display: false }, tooltip }, scales: { x: { ...scales
+                                    .x }, y: { grid: { display: false },
+                                ticks: { color: c.text, font: { family: ff,
+                                        size: 10 } } } } } });
                 }
             }
 
             function renderCalendar() {
-                const calendarEl = document.getElementById('calendar');
-                if (!calendarEl || typeof FullCalendar === 'undefined') return;
-                const events = [
-                    { title: 'Inspect ST-001 Grand Indonesia', start: '2026-06-09', color: '#1d4ed8',
-                        extendedProps: { type: 'inspection' } },
-                    { title: 'Replace PB-1004 at ST-003', start: '2026-06-10', color: '#b45309',
-                        extendedProps: { type: 'repair' } },
-                    { title: 'Restock ST-002 Plaza Indonesia', start: '2026-06-11', color: '#0f766e',
-                        extendedProps: { type: 'restock' } },
-                    { title: 'Monthly audit ST-004 Bandung', start: '2026-06-12', color: '#6d28d9',
-                        extendedProps: { type: 'audit' } },
-                    { title: 'Deploy new station Kuningan', start: '2026-06-15', color: '#0e7490',
-                        extendedProps: { type: 'deployment' } },
-                    { title: 'Fix ST-005 Bekasi maintenance', start: '2026-06-16', color: '#b91c1c',
-                        extendedProps: { type: 'repair' } },
-                ];
-                if (window.calendarInstance) {
-                    try { window.calendarInstance.destroy(); } catch (e) {}
-                    window.calendarInstance = null;
-                }
-                window.calendarInstance = new FullCalendar.Calendar(calendarEl, {
-                    initialView: 'dayGridMonth',
-                    events: events,
+                const el = document.getElementById('calendar');
+                if (!el || typeof FullCalendar === 'undefined') return;
+                const events = db.deployments.map(d => ({ title: `${d.task} - ${d.location}`,
+                    start: `${d.date}T${d.start}:00`, end: `${d.date}T${d.end}:00`,
+                    color: d.priority === 'High' ? '#b91c1c' : d.priority === 'Medium' ? '#b45309' :
+                    '#0f766e', extendedProps: { type: 'deployment' } }));
+                db.maintenance.forEach(m => { events.push({ title: `${m.type}: ${m.machine}`,
+                    start: `${m.date}T09:00:00`, color: '#6d28d9',
+                extendedProps: { type: 'maintenance' } }); });
+                if (calendarInstance) { try { calendarInstance.destroy(); } catch (e) {} }
+                calendarInstance = new FullCalendar.Calendar(el, { initialView: 'dayGridMonth', events,
                     headerToolbar: { left: 'prev,next today', center: 'title',
-                        right: 'dayGridMonth,timeGridWeek' },
-                    height: 'auto',
-                    eventClick: function(info) {
-                        showToast(`📅 ${info.event.title} — ${info.event.start.toLocaleDateString()}`,
-                            'info');
-                    },
-                });
-                window.calendarInstance.render();
+                        right: 'dayGridMonth,timeGridWeek' }, height: 'auto',
+                    eventClick: info => showToast(`📅 ${info.event.title}`, 'info') });
+                calendarInstance.render();
             }
 
+            function renderCalendarEvents() { if (currentSection === 'calendar') renderCalendar(); }
+
             function renderKanban() {
-                const cols = {
-                    todo: $('#column-todo'),
-                    progress: $('#column-progress'),
-                    done: $('#column-done'),
-                };
+                const cols = { todo: $('#column-todo'), progress: $('#column-progress'), done: $('#column-done') };
                 Object.entries(cols).forEach(([status, col]) => {
                     if (!col) return;
                     const titleEl = col.querySelector('.kanban-title');
                     col.innerHTML = '';
                     if (titleEl) col.appendChild(titleEl);
-                    const tasksInStatus = kanbanTasks.filter(t => t.status === status);
-                    tasksInStatus.forEach(task => {
+                    db.kanban.filter(t => t.status === status).forEach(task => {
                         const card = document.createElement('div');
                         card.className = 'kanban-card';
                         card.draggable = true;
                         card.textContent = task.title;
-                        card.setAttribute('aria-label',
-                            `Task: ${task.title}. Drag to move.`);
-                        card.setAttribute('tabindex', '0');
-                        card.addEventListener('dragstart', (e) => {
-                            e.dataTransfer.setData('text/plain', task.id);
-                            card.classList.add('dragging');
-                        });
-                        card.addEventListener('dragend', () => {
-                            card.classList.remove('dragging');
+                        card.addEventListener('dragstart', e => { e.dataTransfer.setData(
+                                'text/plain', task.id);
+                            card.classList.add('dragging'); });
+                        card.addEventListener('dragend', () => { card.classList.remove(
+                                'dragging');
                             Object.values(cols).forEach(c => c.classList.remove(
-                                'drag-over'));
-                        });
+                                'drag-over')); });
                         col.appendChild(card);
                     });
-                    col.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        col.classList.add('drag-over');
-                    });
-                    col.addEventListener('dragleave', () => {
-                        col.classList.remove('drag-over');
-                    });
-                    col.addEventListener('drop', (e) => {
+                    col.addEventListener('dragover', e => { e.preventDefault();
+                        col.classList.add('drag-over'); });
+                    col.addEventListener('dragleave', () => col.classList.remove('drag-over'));
+                    col.addEventListener('drop', e => {
                         e.preventDefault();
                         col.classList.remove('drag-over');
-                        const taskId = e.dataTransfer.getData('text/plain');
-                        const task = kanbanTasks.find(t => t.id === taskId);
-                        if (task && task.status !== status) {
-                            task.status = status;
+                        const id = e.dataTransfer.getData('text/plain');
+                        const task = db.kanban.find(t => t.id === id);
+                        if (task && task.status !== status) { task.status = status;
+                            saveDB();
                             renderKanban();
-                            showToast(`Task "${task.title}" moved to ${status === 'todo' ? 'To Do' : status === 'progress' ? 'In Progress' : 'Done'}`,
-                                'success');
-                        }
+                            showToast('Task moved', 'success'); }
                     });
                 });
             }
 
-            function renderStations(filterText = '') {
+            function renderStationsTable() {
                 const tbody = $('#stationsTableBody');
-                const noResults = $('#stationsNoResults');
                 if (!tbody) return;
-                let filtered = stationsData;
-                if (filterText) {
-                    const q = filterText.toLowerCase();
-                    filtered = stationsData.filter(s =>
-                        Object.values(s).some(v => String(v).toLowerCase().includes(q))
-                    );
-                }
-                if (filtered.length === 0) {
-                    tbody.innerHTML = '';
-                    if (noResults) noResults.style.display = 'block';
-                } else {
-                    if (noResults) noResults.style.display = 'none';
-                    tbody.innerHTML = filtered.map(s => `
-                        <tr>
-                            <td><strong>${s.id}</strong></td>
-                            <td>${s.location}</td>
-                            <td>${s.slots}</td>
-                            <td>${s.available}</td>
-                            <td><span class="badge badge-${s.status==='Online'?'success':s.status==='Offline'?'danger':'warning'}">${s.status}</span></td>
-                            <td>${s.lastMaint}</td>
-                        </tr>
-                    `).join('');
-                }
+                tbody.innerHTML = db.stations.map((s, i) => `
+                <tr><td><strong>${s.id}</strong></td><td>${s.location}</td><td>${s.slots}</td><td>${s.available}</td><td><span class="badge ${getBadgeClass(s.status)}">${s.status}</span></td><td>${s.lastMaint}</td><td class="action-btns"><button class="btn btn-xs" onclick="editItem('station',${i})">✏️</button><button class="btn btn-xs" style="color:var(--danger)" onclick="deleteItem('station',${i})">🗑️</button></td></tr>
+                `).join('');
             }
 
-            function renderInventory(filterText = '') {
+            function renderInventoryTable() {
                 const tbody = $('#inventoryTableBody');
-                const noResults = $('#inventoryNoResults');
                 if (!tbody) return;
-                let filtered = inventoryData;
-                if (filterText) {
-                    const q = filterText.toLowerCase();
-                    filtered = inventoryData.filter(i =>
-                        Object.values(i).some(v => String(v).toLowerCase().includes(q))
-                    );
-                }
-                if (filtered.length === 0) {
-                    tbody.innerHTML = '';
-                    if (noResults) noResults.style.display = 'block';
-                } else {
-                    if (noResults) noResults.style.display = 'none';
-                    tbody.innerHTML = filtered.map(i => `
-                        <tr>
-                            <td><strong>${i.id}</strong></td>
-                            <td>${i.station}</td>
-                            <td>${i.health}%</td>
-                            <td>${i.cycles}</td>
-                            <td><span class="badge badge-${i.status==='Available'?'success':i.status==='Rented'?'warning':i.status==='Broken'?'danger':'neutral'}">${i.status}</span></td>
-                        </tr>
-                    `).join('');
-                }
+                tbody.innerHTML = db.inventory.map((inv, i) => `
+                <tr><td><strong>${inv.id}</strong></td><td>${inv.station}</td><td>${inv.health}%</td><td>${inv.cycles}</td><td><span class="badge ${getBadgeClass(inv.status)}">${inv.status}</span></td><td class="action-btns"><button class="btn btn-xs" onclick="editItem('inventory',${i})">✏️</button><button class="btn btn-xs" style="color:var(--danger)" onclick="deleteItem('inventory',${i})">🗑️</button></td></tr>
+                `).join('');
             }
 
-            function renderRanking(filterText = '') {
+            function renderTechniciansTable() {
+                const tbody = $('#techniciansTableBody');
+                if (!tbody) return;
+                tbody.innerHTML = db.technicians.map((t, i) => `
+                <tr><td><strong>${t.name}</strong></td><td>${t.empId}</td><td>${t.skill}</td><td>${t.phone}</td><td><span class="badge ${getBadgeClass(t.status)}">${t.status}</span></td><td>${t.tasks}</td><td class="action-btns"><button class="btn btn-xs" onclick="editItem('technician',${i})">✏️</button><button class="btn btn-xs" style="color:var(--danger)" onclick="deleteItem('technician',${i})">🗑️</button></td></tr>
+                `).join('');
+            }
+
+            function renderDeploymentsTable() {
+                const tbody = $('#deploymentsTableBody');
+                if (!tbody) return;
+                tbody.innerHTML = db.deployments.map((d, i) => `
+                <tr><td>${d.location}</td><td>${d.task}</td><td>${d.technician}</td><td>${d.date}</td><td>${d.start}-${d.end}</td><td><span class="badge ${getBadgeClass(d.priority)}">${d.priority}</span></td><td><span class="badge ${getBadgeClass(d.status)}">${d.status}</span></td><td class="action-btns"><button class="btn btn-xs" onclick="editItem('deployment',${i})">✏️</button><button class="btn btn-xs" style="color:var(--danger)" onclick="deleteItem('deployment',${i})">🗑️</button></td></tr>
+                `).join('');
+            }
+
+            function renderWorkOrdersTable() {
+                const tbody = $('#workordersTableBody');
+                if (!tbody) return;
+                tbody.innerHTML = db.workorders.map((w, i) => `
+                <tr><td><strong>${w.wo}</strong></td><td>${w.location}</td><td>${w.technician}</td><td><span class="badge ${getBadgeClass(w.priority)}">${w.priority}</span></td><td>${w.deadline}</td><td><span class="badge ${getBadgeClass(w.status)}">${w.status}</span></td><td class="action-btns"><button class="btn btn-xs" onclick="editItem('workorder',${i})">✏️</button><button class="btn btn-xs" style="color:var(--danger)" onclick="deleteItem('workorder',${i})">🗑️</button></td></tr>
+                `).join('');
+            }
+
+            function renderMaintenanceTable() {
+                const tbody = $('#maintenanceTableBody');
+                if (!tbody) return;
+                tbody.innerHTML = db.maintenance.map((m, i) => `
+                <tr><td>${m.machine}</td><td>${m.location}</td><td>${m.type}</td><td>${m.technician}</td><td>${m.date}</td><td><span class="badge ${getBadgeClass(m.status)}">${m.status}</span></td><td class="action-btns"><button class="btn btn-xs" onclick="editItem('maintenance',${i})">✏️</button><button class="btn btn-xs" style="color:var(--danger)" onclick="deleteItem('maintenance',${i})">🗑️</button></td></tr>
+                `).join('');
+            }
+
+            function renderRanking() {
                 const container = $('#rankingList');
                 if (!container) return;
-                let filtered = techRankingData;
-                if (filterText) {
-                    const q = filterText.toLowerCase();
-                    filtered = techRankingData.filter(t =>
-                        t.name.toLowerCase().includes(q)
-                    );
-                }
-                if (filtered.length === 0) {
-                    container.innerHTML =
-                        '<div class="no-results">No technicians match your search.</div>';
-                    return;
-                }
-                container.innerHTML = filtered.map((t, i) => {
-                    const posClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' :
-                        '';
-                    return `
-                        <div class="ranking-bar" tabindex="0" aria-label="Rank ${i+1}: ${t.name}">
-                            <div class="ranking-pos ${posClass}">${i+1}</div>
-                            <div style="flex:1">
-                                <strong>${t.name}</strong><br>
-                                <small style="color:var(--text-tertiary)">${t.tasksDone} tasks · Avg ${t.avgTime} · ⭐${t.rating}</small>
-                            </div>
-                            <div style="width:120px;background:var(--bg-muted);border-radius:6px;">
-                                <div class="progress-fill" style="width:${(t.rating/5)*100}%;background:${i===0?'#b45309':i===1?'#6b7280':i===2?'#92400e':'var(--primary)'}"></div>
-                            </div>
-                        </div>
-                    `;
+                const sorted = [...db.technicians].sort((a, b) => b.tasks - a.tasks);
+                container.innerHTML = sorted.map((t, i) => {
+                    const cls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+                    return `<div class="ranking-bar"><div class="ranking-pos ${cls}">${i+1}</div><div style="flex:1"><strong>${t.name}</strong><br><small style="color:var(--text-tertiary)">${t.tasks} tasks · ${t.skill}</small></div><div style="width:100px;background:var(--bg-muted);border-radius:6px"><div class="progress-fill" style="width:${Math.min(t.tasks*10,100)}%"></div></div></div>`;
                 }).join('');
             }
 
-            function clearSearchHighlights() {
-                $$('tr.highlight-row').forEach(row => row.classList.remove('highlight-row'));
+            function getFormFields(type) {
+                const techOptions = db.technicians.map(t => `<option value="${t.name}">${t.name}</option>`)
+                    .join('');
+                const stationOptions = db.stations.map(s => `<option value="${s.id}">${s.id} - ${s.location}</option>`)
+                    .join('');
+                const maps = {
+                    station: [{ l: 'Station ID', n: 'id', t: 'text', r: true }, { l: 'Location', n: 'location',
+                        t: 'text', r: true }, { l: 'Total Slots', n: 'slots', t: 'number', r: true },
+                    { l: 'Available', n: 'available', t: 'number', r: true }, { l: 'Status', n: 'status',
+                        t: 'select', o: ['Online', 'Offline', 'Maintenance'], r: true }, { l: 'Last Maintenance',
+                        n: 'lastMaint', t: 'date', r: true }
+                    ],
+                    inventory: [{ l: 'Bank ID', n: 'id', t: 'text', r: true }, { l: 'Station', n: 'station',
+                        t: 'select', o: stationOptions, r: true }, { l: 'Health %', n: 'health',
+                    t: 'number', r: true }, { l: 'Cycles', n: 'cycles', t: 'number', r: true }, { l: 'Status',
+                        n: 'status', t: 'select', o: ['Available', 'Rented', 'Broken'], r: true }],
+                    technician: [{ l: 'Name', n: 'name', t: 'text', r: true }, { l: 'Employee ID', n: 'empId',
+                        t: 'text', r: true }, { l: 'Skill Level', n: 'skill', t: 'select', o: ['Senior',
+                            'Mid-Level', 'Junior'
+                        ], r: true }, { l: 'Phone', n: 'phone', t: 'text', r: true }, { l: 'Status', n: 'status',
+                        t: 'select', o: ['On Duty', 'Available', 'Off Duty', 'On Leave'], r: true },
+                    { l: 'Assigned Tasks', n: 'tasks', t: 'number', r: true }],
+                    deployment: [{ l: 'Location', n: 'location', t: 'text', r: true }, { l: 'Task Type', n: 'task',
+                        t: 'text', r: true }, { l: 'Technician', n: 'technician', t: 'select',
+                    o: techOptions, r: true }, { l: 'Date', n: 'date', t: 'date', r: true }, { l: 'Start Time',
+                        n: 'start', t: 'time', r: true }, { l: 'End Time', n: 'end', t: 'time', r: true },
+                    { l: 'Priority', n: 'priority', t: 'select', o: ['High', 'Medium', 'Low'], r: true },
+                    { l: 'Status', n: 'status', t: 'select', o: ['Scheduled', 'In Progress',
+                        'Completed'
+                    ], r: true }],
+                    workorder: [{ l: 'WO Number', n: 'wo', t: 'text', r: true }, { l: 'Location', n: 'location',
+                        t: 'text', r: true }, { l: 'Technician', n: 'technician', t: 'select',
+                    o: techOptions, r: true }, { l: 'Priority', n: 'priority', t: 'select', o: ['High',
+                        'Medium', 'Low'
+                    ], r: true }, { l: 'Deadline', n: 'deadline', t: 'date', r: true }, { l: 'Status', n: 'status',
+                        t: 'select', o: ['Open', 'In Progress', 'Completed', 'Closed'], r: true }],
+                    maintenance: [{ l: 'Machine', n: 'machine', t: 'text', r: true }, { l: 'Location', n: 'location',
+                        t: 'text', r: true }, { l: 'Type', n: 'type', t: 'select', o: ['Preventive',
+                            'Corrective', 'Emergency Repair', 'Inspection'
+                        ], r: true }, { l: 'Technician', n: 'technician', t: 'select', o: techOptions,
+                    r: true }, { l: 'Date', n: 'date', t: 'date', r: true }, { l: 'Status', n: 'status',
+                        t: 'select', o: ['Scheduled', 'In Progress', 'Completed'], r: true }],
+                };
+                return maps[type] || [];
+            }
+            let editingItem = null;
+            let editingType = null;
+            let editingIndex = null;
+
+            function openModal(type, index = null) {
+                editingType = type;
+                editingIndex = index;
+                editingItem = index !== null ? JSON.parse(JSON.stringify(db[type][index])) : {};
+                const fields = getFormFields(type);
+                const title = index !== null ? `Edit ${type}` : `Add ${type}`;
+                const html = `
+                <div class="modal-header"><span>${title}</span><button class="modal-close" onclick="closeModal()">×</button></div>
+                <div class="modal-body">
+                    ${fields.map(f => {
+                        if(f.t==='select'){
+                            const opts = Array.isArray(f.o) ? f.o.map(o=>`<option value="${o}" ${editingItem[f.n]===o?'selected':''}>${o}</option>`).join('') : f.o;
+                            return `<div class="form-group"><label class="form-label">${f.l}</label><select class="form-select" id="field_${f.n}">${opts}</select></div>`;
+                        }
+                        return `<div class="form-group"><label class="form-label">${f.l}</label><input class="form-input" type="${f.t}" id="field_${f.n}" value="${editingItem[f.n]||''}" ${f.r?'required':''}></div>`;
+                    }).join('')}
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" onclick="closeModal()">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveItem()">💾 Save</button>
+                </div>`;
+                const modalContent = $('#modalContent');
+                modalContent.innerHTML = html;
+                $('#modalOverlay').classList.remove('hidden');
             }
 
-            function performGlobalSearch(query) {
-                clearSearchHighlights();
-                if (!query || query.trim().length === 0) {
-                    if (currentSection === 'stations') renderStations();
-                    if (currentSection === 'inventory') renderInventory();
-                    if (currentSection === 'ranking') renderRanking();
-                    if (currentSection === 'kanban') renderKanban();
-                    return;
-                }
-                const q = query.toLowerCase().trim();
-                if (currentSection === 'stations') {
-                    renderStations(q);
-                    $$('#stationsTableBody tr').forEach(row => {
-                        if (row.textContent.toLowerCase().includes(q)) {
-                            row.classList.add('highlight-row');
-                        }
-                    });
-                } else if (currentSection === 'inventory') {
-                    renderInventory(q);
-                    $$('#inventoryTableBody tr').forEach(row => {
-                        if (row.textContent.toLowerCase().includes(q)) {
-                            row.classList.add('highlight-row');
-                        }
-                    });
-                } else if (currentSection === 'ranking') {
-                    renderRanking(q);
-                } else if (currentSection === 'kanban') {
-                    $$('.kanban-card').forEach(card => {
-                        if (card.textContent.toLowerCase().includes(q)) {
-                            card.style.outline = '2px solid var(--primary)';
-                            card.style.outlineOffset = '2px';
-                            card.style.backgroundColor = 'var(--primary-light)';
-                        } else {
-                            card.style.outline = '';
-                            card.style.outlineOffset = '';
-                            card.style.backgroundColor = '';
-                        }
-                    });
-                } else if (currentSection === 'dashboard') {
-                    $$('.kpi-card').forEach(card => {
-                        if (card.textContent.toLowerCase().includes(q)) {
-                            card.style.outline = '2px solid var(--primary)';
-                            card.style.outlineOffset = '2px';
-                        } else {
-                            card.style.outline = '';
-                            card.style.outlineOffset = '';
-                        }
-                    });
-                }
-                if (q.length >= 2) {
-                    const visibleCount = $$(
-                        'tr:not([style*="display: none"]) .highlight-row, .kanban-card[style*="outline"], .kpi-card[style*="outline"]'
-                        ).length;
-                    if (visibleCount === 0 && currentSection !== 'dashboard' && currentSection !==
-                        'kanban') {
-                        showToast('No results found for "' + query + '"', 'warning');
-                    }
-                }
-            }
-            globalSearch.addEventListener('input', function() {
-                const query = this.value;
-                if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
-                searchDebounceTimer = setTimeout(() => {
-                    performGlobalSearch(query);
-                }, 200);
-            });
-            globalSearch.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    this.value = '';
-                    performGlobalSearch('');
-                }
-            });
+            function closeModal() { $('#modalOverlay').classList.add('hidden');
+                editingItem = null;
+                editingType = null;
+                editingIndex = null; }
 
-            window._exportExcel = function(type) {
-                let data, filename;
-                if (type === 'stations') { data = stationsData;
-                    filename = 'stations_report.xlsx'; } else if (type === 'inventory') { data =
-                        inventoryData;
-                    filename = 'inventory_report.xlsx'; } else if (type === 'ranking') { data =
-                        techRankingData;
-                    filename = 'technician_ranking.xlsx'; } else if (type === 'maintenance') { data =
-                        maintenanceData;
-                    filename = 'maintenance_report.xlsx'; } else return;
-                if (typeof XLSX === 'undefined') { showToast('Excel export library not loaded.',
-                    'error'); return; }
-                try {
-                    const ws = XLSX.utils.json_to_sheet(data);
-                    const wb = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(wb, ws, type);
-                    XLSX.writeFile(wb, filename);
-                    showToast(`📥 ${type.charAt(0).toUpperCase()+type.slice(1)} report exported as Excel.`,
-                        'success');
-                } catch (err) {
-                    showToast('Failed to export Excel file.', 'error');
-                    console.error(err);
-                }
-            };
-            window._exportPDF = function(type) {
-                if (typeof window.jspdf === 'undefined' || typeof window.jspdf.jsPDF === 'undefined') {
-                    showToast('PDF export library not loaded.', 'error');
-                    return;
-                }
-                try {
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF();
-                    doc.setFontSize(16);
-                    doc.text(`${type.toUpperCase()} Report`, 20, 20);
-                    doc.setFontSize(10);
-                    let data;
-                    if (type === 'stations') data = stationsData;
-                    else if (type === 'inventory') data = inventoryData;
-                    else if (type === 'ranking') data = techRankingData;
-                    else if (type === 'maintenance') data = maintenanceData;
-                    else return;
-                    let y = 35;
-                    const headers = Object.keys(data[0] || {});
-                    doc.setFontSize(9);
-                    doc.text(headers.join(' | '), 20, y);
-                    y += 8;
-                    doc.setFontSize(8);
-                    data.forEach((item, i) => {
-                        const line = Object.values(item).join(' | ');
-                        if (y > 275) { doc.addPage();
-                            y = 20; }
-                        doc.text(line, 20, y);
-                        y += 7;
-                    });
-                    doc.save(`${type}_report.pdf`);
-                    showToast(`📄 ${type.charAt(0).toUpperCase()+type.slice(1)} report exported as PDF.`,
-                        'success');
-                } catch (err) {
-                    showToast('Failed to export PDF file.', 'error');
-                    console.error(err);
-                }
-            };
-            const simMap = $('#simMap');
-            if (simMap) {
-                simMap.querySelectorAll('.map-marker').forEach(marker => {
-                    marker.addEventListener('click', function() {
-                        const city = this.getAttribute('data-city');
-                        showToast(`📍 ${city} — View deployment details`, 'info');
-                    });
-                    marker.setAttribute('tabindex', '0');
-                    marker.setAttribute('role', 'button');
-                    marker.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            this.click();
-                        }
-                    });
+            function saveItem() {
+                if (!editingType) return;
+                const fields = getFormFields(editingType);
+                const item = {};
+                let valid = true;
+                fields.forEach(f => {
+                    const el = document.getElementById('field_' + f.n);
+                    if (!el) return;
+                    const val = el.value.trim();
+                    if (f.r && !val) valid = false;
+                    item[f.n] = f.t === 'number' ? parseInt(val) || 0 : val;
+                });
+                if (!valid) { showToast('Please fill all required fields', 'error'); return; }
+                if (editingIndex !== null) { db[editingType][editingIndex] = item; } else { if (!db[editingType])
+                        db[editingType] = [];
+                    db[editingType].push(item); }
+                saveDB();
+                closeModal();
+                refreshAll();
+                showToast(`${editingType} saved successfully!`, 'success');
+            }
+
+            function editItem(type, index) { openModal(type, index); }
+
+            function deleteItem(type, index) {
+                showConfirm(`Delete this ${type}? This cannot be undone.`, () => {
+                    db[type].splice(index, 1);
+                    saveDB();
+                    refreshAll();
+                    showToast(`${type} deleted.`, 'success');
                 });
             }
-            document.getElementById('userAvatar').addEventListener('click', () => {
-                showToast('👤 Admin Operator · PowerOps Enterprise', 'info');
+
+            function showConfirm(msg, cb) {
+                $('#confirmMessage').textContent = msg;
+                $('#confirmModalOverlay').classList.remove('hidden');
+                confirmCallback = cb;
+                $('#confirmActionBtn').onclick = () => { if (confirmCallback) confirmCallback();
+                    closeConfirmModal(); };
+            }
+
+            function closeConfirmModal() { $('#confirmModalOverlay').classList.add('hidden');
+                confirmCallback = null; }
+
+            function confirmReset() {
+                showConfirm('Reset ALL data to default? This will delete all changes!', () => { resetDB();
+                    showToast('Database reset to default.', 'warning'); });
+            }
+
+            function exportJSON() {
+                const blob = new Blob([JSON.stringify(db, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'powerops-backup.json';
+                a.click();
+                showToast('Backup exported as JSON.', 'success');
+            }
+
+            function importJSON(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        Object.keys(defaultData).forEach(k => { if (data[k] && Array.isArray(data[
+                            k])) db[k] = data[k]; });
+                        saveDB();
+                        refreshAll();
+                        showToast('Data imported successfully!', 'success');
+                    } catch (err) { showToast('Invalid JSON file.', 'error'); }
+                };
+                reader.readAsText(file);
+                event.target.value = '';
+            }
+
+            function exportExcel(type) {
+                let data, fn;
+                const map = { stations: [db.stations, 'stations'], inventory: [db.inventory, 'inventory'],
+                    technicians: [db.technicians, 'technicians'], deployments: [db.deployments,
+                        'deployments'
+                    ] };
+                if (!map[type]) return;
+                [data, fn] = map[type];
+                if (typeof XLSX === 'undefined') { showToast('Excel library not loaded.', 'error'); return; }
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, type);
+                XLSX.writeFile(wb, `${fn}_report.xlsx`);
+                showToast('Excel exported!', 'success');
+            }
+
+            function exportPDF(type) {
+                if (typeof window.jspdf === 'undefined') { showToast('PDF library not loaded.', 'error'); return; }
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const map = { stations: db.stations, inventory: db.inventory, technicians: db.technicians,
+                    deployments: db.deployments };
+                const data = map[type] || [];
+                doc.setFontSize(14);
+                doc.text(`${type.toUpperCase()} Report`, 20, 20);
+                doc.setFontSize(8);
+                let y = 30;
+                data.forEach(item => {
+                    const line = Object.values(item).join(' | ');
+                    if (y > 280) { doc.addPage();
+                        y = 20; }
+                    doc.text(line, 20, y);
+                    y += 7;
+                });
+                doc.save(`${type}_report.pdf`);
+                showToast('PDF exported!', 'success');
+            }
+
+            function initMap() {
+                const mapContainer = document.getElementById('leafletMap');
+                if (!mapContainer || leafletMap) return;
+                leafletMap = L.map('leafletMap', {
+                    center: [-6.2, 106.8],
+                    zoom: 11,
+                    zoomControl: true,
+                    attributionControl: false
+                });
+                updateMapTiles();
+                updateMapMarkers();
+                leafletMap.on('click', () => {});
+                setTimeout(() => leafletMap.invalidateSize(), 100);
+            }
+
+            function updateMapTiles() {
+                if (!leafletMap) return;
+                leafletMap.eachLayer(layer => {
+                    if (layer instanceof L.TileLayer) leafletMap.removeLayer(layer);
+                });
+                const tileUrl = darkMode ?
+                    'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png' :
+                    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+                L.tileLayer(tileUrl, {
+                    subdomains: 'abcd',
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+                }).addTo(leafletMap);
+            }
+
+            function updateMapMarkers() {
+                if (!leafletMap) return;
+                leafletMarkers.forEach(m => leafletMap.removeLayer(m));
+                leafletMarkers = [];
+                const cityCoords = {
+                    'Jakarta': [-6.2088, 106.8456],
+                    'Bekasi': [-6.2349, 106.9896],
+                    'Depok': [-6.3918, 106.806],
+                    'Tangerang': [-6.1781, 106.6305],
+                    'Bandung': [-6.9175, 107.6191]
+                };
+                const deploymentsByCity = {};
+                db.deployments.forEach(d => {
+                    if (!deploymentsByCity[d.location]) deploymentsByCity[d.location] = { count: 0,
+                        technicians: new Set() };
+                    deploymentsByCity[d.location].count++;
+                    deploymentsByCity[d.location].technicians.add(d.technician);
+                });
+                Object.entries(cityCoords).forEach(([city, coords]) => {
+                    const info = deploymentsByCity[city] || { count: 0, technicians: new Set() };
+                    const marker = L.marker(coords, {
+                        icon: L.divIcon({
+                            className: 'custom-div-icon',
+                            html: `<div style="background:${darkMode?'#3b82f6':'#1d4ed8'};width:14px;height:14px;border-radius:50%;border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.4)"></div>`,
+                            iconSize: [20, 20],
+                            iconAnchor: [10, 10]
+                        })
+                    }).addTo(leafletMap);
+                    marker.bindPopup(`
+                        <strong>${city}</strong><br>
+                        Active Deployments: ${info.count}<br>
+                        Technicians: ${info.technicians.size ? [...info.technicians].join(', ') : 'None'}
+                    `);
+                    leafletMarkers.push(marker);
+                });
+            }
+            window.openModal = openModal;
+            window.closeModal = closeModal;
+            window.saveItem = saveItem;
+            window.editItem = editItem;
+            window.deleteItem = deleteItem;
+            window.exportExcel = exportExcel;
+            window.exportPDF = exportPDF;
+            window.exportJSON = exportJSON;
+            window.importJSON = importJSON;
+            window.confirmReset = confirmReset;
+            window.showConfirm = showConfirm;
+            window.closeConfirmModal = closeConfirmModal;
+            window.showToast = showToast;
+            $('#modalOverlay').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+            $('#confirmModalOverlay').addEventListener('click', function(e) { if (e.target === this)
+            closeConfirmModal(); });
+            $('#globalSearch').addEventListener('input', function() {
+                clearTimeout(searchDebounce);
+                const q = this.value.toLowerCase().trim();
+                searchDebounce = setTimeout(() => {
+                    const tables = { stations: 'stationsTableBody', inventory: 'inventoryTableBody',
+                        technicians: 'techniciansTableBody', deployments: 'deploymentsTableBody',
+                        workorders: 'workordersTableBody', maintenance: 'maintenanceTableBody' };
+                    const tbodyId = tables[currentSection];
+                    if (tbodyId) {
+                        const rows = $$('#' + tbodyId + ' tr');
+                        rows.forEach(r => { r.style.display = r.textContent.toLowerCase()
+                                .includes(q) ? '' : 'none'; });
+                    }
+                }, 200);
             });
-            document.getElementById('notifBtn').addEventListener('click', () => {
-                showToast('🔔 No new notifications', 'info');
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') { closeModal();
+                    closeConfirmModal(); }
             });
 
             function init() {
-                loadingScreen.classList.add('hidden');
-                setTimeout(() => { if (loadingScreen.parentNode) loadingScreen.style.display =
-                        'none'; }, 500);
-                renderKPIs();
-                createCharts();
-                renderStations();
-                renderInventory();
-                renderRanking();
-                renderKanban();
+                loadDB();
+                $('#loading-screen').classList.add('hidden');
+                setTimeout(() => { const ls = $('#loading-screen'); if (ls) ls.style.display =
+                    'none'; }, 500);
+                initMap();
+                refreshAll();
                 navigateTo('dashboard');
-                console.log(
-                    '%c🔋 PowerOps Enterprise v5.0 Ready %c| %cDashboard · Calendar · Kanban · Stations · Inventory · Ranking · Reports',
-                    'font-weight:700;color:#1d4ed8', '', 'color:#64748b');
-                showToast('🚀 PowerOps Enterprise loaded successfully.', 'success');
+                showToast('🚀 PowerOps Enterprise v6.1 Ready', 'success');
             }
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+            else init();
         })();
     </script>
 </body>
